@@ -14,8 +14,8 @@ public class ToXamarin {
     }
 
     @GetMapping("/register")
-    public int xregister(@RequestParam(value="username") String username,
+    public String xregister(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) {
-        return register(username, password);
+        return String.valueOf(register(username, password));
     }
 }
