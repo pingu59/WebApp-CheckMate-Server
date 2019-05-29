@@ -1,0 +1,12 @@
+services:
+  - postgres
+
+stages:
+  - build
+
+job1:
+  stage: build
+  script:
+    - ./gradlew build
+
+
