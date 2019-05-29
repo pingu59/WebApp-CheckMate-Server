@@ -7,11 +7,11 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class ToDatabase {
-    private final String url = "jdbc:postgresql://db.doc.ic.ac.uk:5432/g1827127_u";
-    private final String account = "g1827127_u";
-    private final String password = "kuI1yeTGHW";
 
-    private Connection connect(){
+    private static Connection connect(){
+        final String url = "jdbc:postgresql://db.doc.ic.ac.uk:5432/g1827127_u";
+        final String account = "g1827127_u";
+        final String password = "kuI1yeTGHW";
         Connection connection = null;
         try{
             connection = DriverManager.getConnection(url, account, password);
@@ -22,7 +22,7 @@ public class ToDatabase {
         return connection;
     }
 
-    public String encrypt(String password){
+    public static String encrypt(String password){
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.reset();
@@ -34,7 +34,7 @@ public class ToDatabase {
         }
     }
 
-    public User getUser(int userId){
+    public static User getUser(int userId){
         Connection conn = connect();
         try {
             Statement st = conn.createStatement();
@@ -59,7 +59,7 @@ public class ToDatabase {
         }
     }
 
-    public void register(String username, String password){
+    public static String register(String username, String password){
         // add assertion to the length of the user name at xamarin!!
         Connection conn = connect();
         try {
@@ -77,8 +77,9 @@ public class ToDatabase {
             System.out.println("affected " + rowAffected +"rows");
             largestId.close();
             st.close();
+            return "Register success at userid = " + thisId;
         }catch (SQLException e){
-            //  System.out.println("Here");
+            return "Register failure";
         }
 
     }
