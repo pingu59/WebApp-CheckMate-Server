@@ -2,10 +2,10 @@ services:
   - postgres
 
 stages:
-  - build
+  - build & test
 
 job1:
-  stage: build
+  stage: build & test
   script:
     - ./gradlew build
 
