@@ -3,10 +3,16 @@ services:
 
 stages:
   - build & test
+  - deploy
 
 job1:
   stage: build & test
   script:
     - ./gradlew build
+
+job2:
+  stage: deploy
+  script:
+    - ./gradlew bootRun
 
 
