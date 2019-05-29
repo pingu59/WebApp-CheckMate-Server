@@ -30,10 +30,17 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    
+    // database
     compile(group: 'org.postgresql', name: 'postgresql', version: '42.2.5')
 
+    // spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
+    //json
+    compile 'org.json:json:20180813'
+
 }
 
 

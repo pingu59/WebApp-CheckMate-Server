@@ -59,7 +59,7 @@ public class ToDatabase {
         }
     }
 
-    public static String register(String username, String password){
+    public static int register(String username, String password){
         // add assertion to the length of the user name at xamarin!!
         Connection conn = connect();
         try {
@@ -77,9 +77,9 @@ public class ToDatabase {
             System.out.println("affected " + rowAffected +"rows");
             largestId.close();
             st.close();
-            return "Register success at userid = " + thisId;
+            return thisId;
         }catch (SQLException e){
-            return "Register failure";
+            return -1;
         }
 
     }
