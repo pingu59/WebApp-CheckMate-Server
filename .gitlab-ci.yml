@@ -19,8 +19,7 @@ job2:
 job3:
   stage: deploy
   before_script:
-    - fuser -k 8080/tcp
-    - gradlew --stop
+    - ./gradlew --stop
   script:
     - ./gradlew bootRun &
 
