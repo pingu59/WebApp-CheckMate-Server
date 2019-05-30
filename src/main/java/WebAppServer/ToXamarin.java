@@ -11,7 +11,7 @@ public class ToXamarin {
     @GetMapping("/login")
     public String xlogin(@RequestParam(value="userid") String userid,
                         @RequestParam(value="password") String password) {
-        return String.valueOf(login(userid, password));
+        return login(userid, password);
     }
 
     @GetMapping("/register")

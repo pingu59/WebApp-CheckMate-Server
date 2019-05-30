@@ -85,9 +85,10 @@ public class ToDatabase {
     }
 
     public static String login(String userIDEntered, String passwordEntered){
+        int responseCode = 0;
+        String userJson = "";
         Connection conn = connect();
         try {
-            String ret = "failure";
             int userID = Integer.parseInt(userIDEntered);
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + userID);
@@ -97,19 +98,21 @@ public class ToDatabase {
                 userDetail.close();
                 st.close();
                 String encryptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
-                //return all the info needed in json afterwards
+                //if id and password matches, return all the info needed in json afterwards
                 if(password.equals(encryptedPasswordEntered)){
-                    ret = JSONConvert.userToJSON(new User(userID, username, password));
+                    responseCode = 1;
+                    userJson = JSONConvert.userToJSON(new User(userID, username, password));
                 }
-            }else{
-                System.err.println("NO SUCH USER!!");
+                else{
+                    responseCode = 3;
+                }
+            }else{ //user not exist
+                responseCode = 2;
             }
             userDetail.close();
             st.close();
-            return ret;
+            return responseCode+"!"+userJson;
         }catch (SQLException e){
-            //  System.out.println("Here");
-            // CHANGE THIS ??
             throw new RuntimeException(e);
         }
     }
