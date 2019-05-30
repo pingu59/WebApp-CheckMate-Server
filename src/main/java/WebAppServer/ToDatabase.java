@@ -84,25 +84,29 @@ public class ToDatabase {
 
     }
 
-    public static boolean login(String userIDEntered, String passwordEntered){
+    public static String login(String userIDEntered, String passwordEntered){
         Connection conn = connect();
         try {
+            String ret = "failure";
             int userID = Integer.parseInt(userIDEntered);
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + userID);
             if(userDetail.next()){
+                String username = userDetail.getString(2);
                 String password = userDetail.getString(3);
                 userDetail.close();
                 st.close();
-                String encrptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
-                return password.equals(encrptedPasswordEntered);
+                String encryptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
+                //return all the info needed in json afterwards
+                if(password.equals(encryptedPasswordEntered)){
+                    ret = JSONConvert.userToJSON(new User(userID, username, password));
+                }
             }else{
                 System.err.println("NO SUCH USER!!");
-                userDetail.close();
-                st.close();
-                // CHANGE THIS !! REFACTOR
-                return false;
             }
+            userDetail.close();
+            st.close();
+            return ret;
         }catch (SQLException e){
             //  System.out.println("Here");
             // CHANGE THIS ??

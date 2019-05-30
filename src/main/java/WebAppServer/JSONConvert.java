@@ -6,12 +6,12 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 
 public class JSONConvert {
-    public static JSONObject userToJSON(User user){
+    public static String userToJSON(User user){
         JSONObject jobj = new JSONObject();
         jobj.put("userid", user.getUserId());
         jobj.put("username", user.getUsername());
         jobj.put("password", user.getPassword());
-        return jobj;
+        return jobj.toString();
     }
 
     public static User JSONToUser(JSONObject jobj){
