@@ -8,6 +8,8 @@ stages:
 
 job1:
   stage: build
+  before_script:
+  - ./gradlew --stop
   script:
     - ./gradlew build -x test
 
@@ -18,8 +20,6 @@ job2:
 
 job3:
   stage: deploy
-  before_script:
-    - ./gradlew --stop
   script:
     - ./gradlew bootRun &
 
