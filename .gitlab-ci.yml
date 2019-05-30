@@ -6,13 +6,17 @@ stages:
   - deploy
 
 job1:
-  stage: build & test
+  stage: build
+  script:
+    - ./gradlew build -x test
+
+job2:
+  stage: test
   script:
     - ./gradlew build
 
-job2:
-  stage: deploy
-  script:
-    - ./gradlew bootRun
+after_script:
+  - ./gradlew --stop
+  - ./gradlew bootRun
 
 
