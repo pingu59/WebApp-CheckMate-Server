@@ -83,4 +83,32 @@ public class ToDatabase {
         }
 
     }
+
+    public static boolean login(String userIDEntered, String passwordEntered){
+        Connection conn = connect();
+        try {
+            int userID = Integer.parseInt(userIDEntered);
+            Statement st = conn.createStatement();
+            ResultSet userDetail = st.executeQuery("select * from users where userid = " + userID);
+            if(userDetail.next()){
+                String password = userDetail.getString(3);
+                userDetail.close();
+                st.close();
+                String encrptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
+                return password.equals(encrptedPasswordEntered);
+            }else{
+                System.err.println("NO SUCH USER!!");
+                userDetail.close();
+                st.close();
+                // CHANGE THIS !! REFACTOR
+                return false;
+            }
+        }catch (SQLException e){
+            //  System.out.println("Here");
+            // CHANGE THIS ??
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
