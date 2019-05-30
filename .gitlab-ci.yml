@@ -21,5 +21,5 @@ job2:
 job3:
   stage: deploy
   script:
-    - ./deployShell.sh
+    - ./deployShell.sh &
 
