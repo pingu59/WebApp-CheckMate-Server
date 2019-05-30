@@ -9,7 +9,7 @@ stages:
 job1:
   stage: build
   before_script:
-  - ./gradlew --stop
+    - ./gradlew --stop
   script:
     - ./gradlew build -x test
 
