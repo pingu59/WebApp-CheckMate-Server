@@ -20,6 +20,4 @@ job3:
   stage: deploy
   script:
     - ./gradlew bootRun
-  after_script:
-    - sudo reboot
 
