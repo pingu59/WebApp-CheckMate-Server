@@ -23,6 +23,5 @@ job3:
 
 
 after_script:
-  - ./gradlew --stop
-
+  - sudo reboot
 
