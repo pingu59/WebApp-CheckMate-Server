@@ -2,7 +2,8 @@ services:
   - postgres
 
 stages:
-  - build & test
+  - build
+  - test
   - deploy
 
 job1:
@@ -15,8 +16,13 @@ job2:
   script:
     - ./gradlew build
 
+job3:
+  stage: deploy
+  script:
+    - ./gradlew bootRun
+
+
 after_script:
   - ./gradlew --stop
-  - ./gradlew bootRun
 
 
