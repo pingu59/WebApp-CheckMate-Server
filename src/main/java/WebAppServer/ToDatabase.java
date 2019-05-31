@@ -1,5 +1,6 @@
 package WebAppServer;
 
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -112,6 +113,43 @@ public class ToDatabase {
             userDetail.close();
             st.close();
             return responseCode+"!"+userJson;
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    //TODO duplicates not handled
+    public static int friendRequest(int senderid, int friendid){
+        Connection conn = connect();
+        try {
+            Statement st = conn.createStatement();
+
+            String sqlString = String.format("UPDATE users SET friendreq = friendreq || '{%d}' WHERE userid = %d", senderid, friendid);
+            int rowAffected = st.executeUpdate(sqlString);
+            System.out.println("affected " + rowAffected +"rows");
+            st.close();
+            return 1;
+        }catch (SQLException e){
+            return -1;
+        }
+    }
+
+
+    //TODO duplicates not handled
+    public static Long[] getFriendRequestList(int id){
+        Connection conn = connect();
+        try {
+            Statement st = conn.createStatement();
+            ResultSet userDetail = st.executeQuery("select * from users where userid = " + id);
+            if(userDetail.next()){
+                Array firendReqListArray = userDetail.getArray(5);
+                Long[] friendReqList = (Long[]) firendReqListArray.getArray();
+                userDetail.close();
+                st.close();
+                return friendReqList;
+            }else{
+                return null;
+            }
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
