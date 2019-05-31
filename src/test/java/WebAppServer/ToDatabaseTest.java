@@ -32,4 +32,9 @@ public class ToDatabaseTest {
   public void getFriendRequestList() {
     ToDatabase.getFriendRequestList(10);
   }
+
+  @Test
+  public void deleteFriendRequest(){
+    ToDatabase.deleteFriendRequest(9,14);
+  }
 }

@@ -31,4 +31,10 @@ public class ToXamarin {
     public String xgetFriendRequestList(@RequestParam(value="id") int id){
         return Arrays.toString(getFriendRequestList(id));
     }
+
+    @GetMapping("/deletefriendreq")
+    public String xdeleteFriendRequest(@RequestParam(value="myid") int myid,
+                                        @RequestParam(value="requestid") int requestid){
+        return String.valueOf(deleteFriendRequest(myid, requestid));
+    }
 }

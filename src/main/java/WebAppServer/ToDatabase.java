@@ -155,5 +155,19 @@ public class ToDatabase {
         }
     }
 
+    //TODO working on it
+    public static int deleteFriendRequest(int myid, int requestid){
+        Connection conn = connect();
+        try {
+            Statement st = conn.createStatement();
+            String sqlString = String.format("UPDATE users SET friendreq = array_remove(friendreq, '%d') WHERE userid=%d;", requestid, myid);
+            st.execute(sqlString);
+            st.close();
+            return 1;
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }
