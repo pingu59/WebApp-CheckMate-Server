@@ -21,5 +21,4 @@ job2:
 job3:
   stage: deploy
   script:
-    - nohup sh ./gradlew bootRun  >Output.log 2>&1 &
-
+    - dpl --provider=heroku --app=group27server --api-key=7e29a65c-ff32-4014-a90c-8f9cc9884771
