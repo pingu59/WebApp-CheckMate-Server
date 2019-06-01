@@ -1,1 +1,1 @@
-web: sh target/bin/group27server
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/WebAppServer.jar
