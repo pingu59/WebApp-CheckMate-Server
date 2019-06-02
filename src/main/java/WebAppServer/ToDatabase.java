@@ -148,7 +148,7 @@ public class ToDatabase {
                 st.close();
                 return friendReqList;
             }else{
-                return null;
+                return new Long[0];
             }
         }catch (SQLException e){
             throw new RuntimeException(e);
