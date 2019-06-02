@@ -8,6 +8,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class ToDatabase {
+    private static Connection conn = connect();
+    private static final int SUCCESS = 1;
+    private static final int SERVER_FAILURE = -1;
+    private static final int FAILURE = 0;
+    private static final int USER_NOT_EXSIST = 2;
+    private static final int INCORRECT_PWD = 3;
 
     private static Connection connect(){
         final String url = "jdbc:postgresql://db.doc.ic.ac.uk:5432/g1827127_u";
@@ -36,16 +42,14 @@ public class ToDatabase {
     }
 
     public static User getUser(int userId){
-        Connection conn = connect();
         try {
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + userId);
             if(userDetail.next()){
                 String username = userDetail.getString(2);
-                String password = userDetail.getString(3);
                 userDetail.close();
                 st.close();
-                return new User(userId, username, password);
+                return new User(userId, username);
             }else{
                 System.err.println("NO SUCH USER!!");
                 userDetail.close();
@@ -62,7 +66,6 @@ public class ToDatabase {
 
     public static int register(String username, String password){
         // add assertion to the length of the user name at xamarin!!
-        Connection conn = connect();
         try {
             Statement st = conn.createStatement();
             ResultSet largestId = st.executeQuery("select count(*) from users");
@@ -80,7 +83,7 @@ public class ToDatabase {
             st.close();
             return thisId;
         }catch (SQLException e){
-            return -1;
+            return SERVER_FAILURE;
         }
 
     }
@@ -88,7 +91,6 @@ public class ToDatabase {
     public static String login(String userIDEntered, String passwordEntered){
         int responseCode = 0;
         String userJson = "";
-        Connection conn = connect();
         try {
             int userID = Integer.parseInt(userIDEntered);
             Statement st = conn.createStatement();
@@ -101,14 +103,14 @@ public class ToDatabase {
                 String encryptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
                 //if id and password matches, return all the info needed in json afterwards
                 if(password.equals(encryptedPasswordEntered)){
-                    responseCode = 1;
+                    responseCode = SUCCESS;
                     userJson = JSONConvert.userToJSON(new User(userID, username, password));
                 }
                 else{
-                    responseCode = 3;
+                    responseCode = INCORRECT_PWD;
                 }
             }else{ //user not exist
-                responseCode = 2;
+                responseCode = USER_NOT_EXSIST;
             }
             userDetail.close();
             st.close();
@@ -120,24 +122,21 @@ public class ToDatabase {
 
     //TODO duplicates not handled
     public static int friendRequest(int senderid, int friendid){
-        Connection conn = connect();
         try {
             Statement st = conn.createStatement();
-
             String sqlString = String.format("UPDATE users SET friendreq = friendreq || '{%d}' WHERE userid = %d", senderid, friendid);
             int rowAffected = st.executeUpdate(sqlString);
             System.out.println("affected " + rowAffected +"rows");
             st.close();
-            return 1;
+            return SUCCESS;
         }catch (SQLException e){
-            return -1;
+            return SERVER_FAILURE;
         }
     }
 
 
     //TODO duplicates not handled
     public static Long[] getFriendRequestList(int id){
-        Connection conn = connect();
         try {
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + id);
@@ -157,16 +156,43 @@ public class ToDatabase {
 
     //TODO working on it
     public static int deleteFriendRequest(int myid, int requestid){
-        Connection conn = connect();
         try {
             Statement st = conn.createStatement();
             String sqlString = String.format("UPDATE users SET friendreq = array_remove(friendreq, '%d') WHERE userid=%d;", requestid, myid);
             st.execute(sqlString);
             st.close();
-            return 1;
+            return SUCCESS;
 
         }catch (SQLException e){
             throw new RuntimeException(e);
+        }
+    }
+
+    public static String addFriend(int myid, int requestid){
+        try {
+            Statement st = conn.createStatement();
+            String baseString = "UPDATE users SET friends = array_append(friends, '%d') WHERE userid=%d;";
+            st.execute(String.format(baseString, myid, requestid));
+            st.execute(String.format(baseString, requestid, myid));
+            st.close();
+            return JSONConvert.userToJSON(getUser(requestid));
+        }catch (SQLException e){
+            //or some universal error control
+            return "failure";
+        }
+    }
+
+    public static int deleteFriend(int myid, int requestid){
+        try {
+            Statement st = conn.createStatement();
+            String baseString = "UPDATE users SET friends = array_remove(friends, '%d') WHERE userid=%d;";
+            st.execute(String.format(baseString, myid, requestid));
+            st.execute(String.format(baseString, requestid, myid));
+            st.close();
+            return SUCCESS;
+        }catch (SQLException e){
+            //or some universal error control
+            return FAILURE;
         }
     }
 
