@@ -49,4 +49,9 @@ public class ToXamarin {
                              @RequestParam(value="requestid") int requestid){
         return deleteFriend(myid, requestid);
     }
+
+    @GetMapping("/getinbox")
+    public String xgetinbox(@RequestParam(value="myid") int myid){
+        return String.valueOf(getInbox(myid));
+    }
 }

@@ -174,6 +174,8 @@ public class ToDatabase {
             String baseString = "UPDATE users SET friends = array_append(friends, '%d') WHERE userid=%d;";
             st.execute(String.format(baseString, myid, requestid));
             st.execute(String.format(baseString, requestid, myid));
+            String addInbox = "UPDATE users SET friendupdate = array_append(friendupdate, '%d') WHERE userid=%d;";
+            st.execute(String.format(addInbox, myid, requestid));
             st.close();
             return JSONConvert.userToJSON(getUser(requestid));
         }catch (SQLException e){
@@ -188,6 +190,8 @@ public class ToDatabase {
             String baseString = "UPDATE users SET friends = array_remove(friends, '%d') WHERE userid=%d;";
             st.execute(String.format(baseString, myid, requestid));
             st.execute(String.format(baseString, requestid, myid));
+            String addInbox = "UPDATE users SET friendupdate = array_append(friendupdate, '%d') WHERE userid=%d;";
+            st.execute(String.format(addInbox, -myid, requestid));
             st.close();
             return SUCCESS;
         }catch (SQLException e){
@@ -196,4 +200,23 @@ public class ToDatabase {
         }
     }
 
+    public static String getInbox(int userid){
+        String arrayString = "failure";
+        try {
+            Statement st = conn.createStatement();
+            String command = "select friendupdate from users where userid = " + userid;
+            ResultSet resultSet = st.executeQuery(command);
+            if(resultSet.next()){
+                arrayString = resultSet.getString(1);
+            }
+            String baseString = "UPDATE users SET friendupdate = '{}' WHERE userid=%d;";
+            st.execute(String.format(baseString, userid));
+            resultSet.close();
+            st.close();
+        }catch (SQLException e){
+            return "failure";
+            //or some universal error control
+        }
+        return arrayString;
+    }
 }
