@@ -22,19 +22,19 @@ public class ToDatabaseTest {
   public void login() {
   }
 
-  @Test
-  public void friendRequest() {
-    ToDatabase.friendRequest(10, 9);
-
-  }
-
-  @Test
-  public void getFriendRequestList() {
-    ToDatabase.getFriendRequestList(10);
-  }
-
-  @Test
-  public void deleteFriendRequest(){
-    ToDatabase.deleteFriendRequest(9,14);
-  }
+//  @Test
+//  public void friendRequest() {
+//    ToDatabase.friendRequest(10, 9);
+//
+//  }
+//
+//  @Test
+//  public void getFriendRequestList() {
+//    ToDatabase.getFriendRequestList(10);
+//  }
+//
+//  @Test
+//  public void deleteFriendRequest(){
+//    ToDatabase.deleteFriendRequest(9,14);
+//  }
 }

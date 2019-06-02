@@ -3,8 +3,6 @@ import java.util.Arrays;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import static WebAppServer.ToDatabase.*;
 
 @RestController
@@ -52,6 +50,7 @@ public class ToXamarin {
 
     @GetMapping("/getinbox")
     public String xgetinbox(@RequestParam(value="myid") int myid){
+        //format: {}, {14}, {-9}. positive for adding new friend, negative for deleted
         return String.valueOf(getInbox(myid));
     }
 }
