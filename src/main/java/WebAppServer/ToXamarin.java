@@ -40,7 +40,7 @@ public class ToXamarin {
 
     @GetMapping("/addfriend")
     public String xaddfriend(@RequestParam(value="myid") int myid,
-                                       @RequestParam(value="requestid") int requestid){
+                            @RequestParam(value="requestid") int requestid){
         return String.valueOf(addFriend(myid, requestid));
     }
 
@@ -60,6 +60,12 @@ public class ToXamarin {
     public String xgetfriendid(@RequestParam(value="myid") int myid){
         //format: {}, {14}, {14, 9}.
         return getFriendId(myid);
+    }
+
+    @GetMapping("/getfriends")
+    public String xgetfriends(@RequestParam(value="myid") int myid){
+        //format: {}, {14}, {14, 9}.
+        return getFriends(myid);
     }
 
 }
