@@ -6,6 +6,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ToDatabase {
     private static Connection conn = connect();
@@ -236,5 +238,35 @@ public class ToDatabase {
             //or some universal error control
         }
         return arrayString;
+    }
+
+    public static String getFriends(int userid){
+        try {
+            Statement st = conn.createStatement();
+            String command = "select friends from users where userid = " + userid;
+            ResultSet resultSet = st.executeQuery(command);
+            if(resultSet.next()){
+                Array array = resultSet.getArray(1);
+                Long[] IDs = (Long[]) array.getArray();
+                resultSet.close();
+                List<Friend> friendList = new ArrayList <>();
+                for(Long id: IDs){
+                    String findFriend = "select username from users where userid = " + id;
+                    ResultSet friendResult = st.executeQuery(findFriend);
+                    if(friendResult.next()){
+                        String friendName = friendResult.getString(1);
+                       friendList.add(new Friend(id.intValue(), friendName));
+                    }
+
+                }
+                st.close();
+                return JSONConvert.friendsToJSON(friendList);
+            }
+            else{
+                return "NULL";
+            }
+        }catch (SQLException e){
+            return "failure";
+        }
     }
 }

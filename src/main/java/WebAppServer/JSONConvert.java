@@ -1,6 +1,8 @@
 package WebAppServer;
+import java.util.List;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
@@ -27,4 +29,16 @@ public class JSONConvert {
         }
     }
 
+    public static String friendsToJSON(List<Friend> friends){
+        JSONArray jsonArray = new JSONArray();
+        for(int i = 0; i < friends.size();i++){
+            JSONObject jobj = new JSONObject();
+            jobj.put("FriendID", friends.get(i).getFriendID());
+            jobj.put("FriendName", friends.get(i).getFriendName());
+            jsonArray.put(jobj);
+        }
+        return jsonArray.toString();
+
+
+    }
 }
