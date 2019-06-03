@@ -68,4 +68,19 @@ public class ToXamarin {
         return getFriends(myid);
     }
 
+
+    //not tested
+    @GetMapping("/individualTask")
+    public String xcreatIndividualTask(@RequestParam(value="myId") int myId,
+                                       @RequestParam(value="taskName") String taskName,
+                                       @RequestParam(value="repetition") String repetition,
+                                       @RequestParam(value="frequency") int frequency){
+        return String.valueOf(createTask(myId, taskName, repetition, frequency));
+
+    }
+
+
+
+
+
 }

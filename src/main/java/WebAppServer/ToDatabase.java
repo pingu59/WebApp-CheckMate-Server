@@ -237,6 +237,7 @@ public class ToDatabase {
             return "failure";
             //or some universal error control
         }
+
         return arrayString;
     }
 
@@ -257,7 +258,6 @@ public class ToDatabase {
                         String friendName = friendResult.getString(1);
                        friendList.add(new Friend(id.intValue(), friendName));
                     }
-
                 }
                 st.close();
                 return JSONConvert.friendsToJSON(friendList);
@@ -269,4 +269,33 @@ public class ToDatabase {
             return "failure";
         }
     }
+
+
+    //create task
+    public static int createTask(int myId, String taskName, String repetition, int frequency){
+        try {
+            Statement st = conn.createStatement();
+
+            int rowAffected = st.executeUpdate("INSERT INTO individualtask VALUES (" + myId +", '{" + taskName +
+                    "}', '{" + repetition + "}' ," + frequency +" )");
+            System.out.println("affected " + rowAffected +"rows");
+            st.close();
+            return myId;
+        }catch (SQLException e){
+            return SERVER_FAILURE;
+        }
+    }
+
+    public static int deleteTask(int myId, String taskName){
+        try {
+            Statement st = conn.createStatement();
+            st.executeQuery("DELETE FROM individualtask WHERE (userid, taskname) = (" + myId +", '{" + taskName + "}')");
+            st.close();
+            return myId;
+        }catch (SQLException e){
+            return SERVER_FAILURE;
+        }
+    }
+
+
 }
