@@ -219,4 +219,22 @@ public class ToDatabase {
         }
         return arrayString;
     }
+
+    public static String getFriendId(int userid) {
+        String arrayString = "failure";
+        try {
+            Statement st = conn.createStatement();
+            String command = "select friends from users where userid = " + userid;
+            ResultSet resultSet = st.executeQuery(command);
+            if(resultSet.next()){
+                arrayString = resultSet.getString(1);
+            }
+            resultSet.close();
+            st.close();
+        }catch (SQLException e){
+            return "failure";
+            //or some universal error control
+        }
+        return arrayString;
+    }
 }

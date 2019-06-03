@@ -1,8 +1,10 @@
 package WebAppServer;
 import java.util.Arrays;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
 import static WebAppServer.ToDatabase.*;
 
 @RestController
@@ -53,4 +55,11 @@ public class ToXamarin {
         //format: {}, {14}, {-9}. positive for adding new friend, negative for deleted
         return String.valueOf(getInbox(myid));
     }
+
+    @GetMapping("/getfriendid")
+    public String xgetfriendid(@RequestParam(value="myid") int myid){
+        //format: {}, {14}, {14, 9}.
+        return getFriendId(myid);
+    }
+
 }
