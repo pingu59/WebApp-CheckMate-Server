@@ -70,6 +70,12 @@ public class ToXamarin {
 
 
     //not tested
+
+    @GetMapping("/getUserInfo")
+    public String xgetUserInfo(@RequestParam(value="userId") int userId){
+        return getUserInfo(userId);
+    }
+
     @GetMapping("/createIndvTask")
     public String xcreatIndividualTask(@RequestParam(value="myId") int myId,
                                        @RequestParam(value="taskName") String taskName,

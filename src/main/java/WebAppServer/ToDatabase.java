@@ -274,6 +274,27 @@ public class ToDatabase {
         }
     }
 
+    public static String getUserInfo(int userid){
+        try {
+            Statement st = conn.createStatement();
+            String getUserInfo = "select * from users where userid = " + userid;
+            ResultSet userInfo = st.executeQuery(getUserInfo);
+            userInfo.next();
+            System.out.println("1");
+            JSONObject jobj = new JSONObject();
+            System.out.println("2");
+            jobj.put("FriendID", userInfo.getObject(1));
+            jobj.put("FriendName", userInfo.getObject(2));
+            System.out.println("3");
+            st.close();
+            return jobj.toString();
+        } catch (Exception e) {
+            return "failure";
+        }
+    }
+
+
+
 
     //create task
     public static int createIndvTask(int myId, String taskName, String repetition, int frequency, int[] supervisors, String date){
@@ -421,6 +442,4 @@ public class ToDatabase {
             return SERVER_FAILURE;
         }
     }
-
-
 }
