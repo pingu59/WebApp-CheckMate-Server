@@ -1,18 +1,22 @@
 package WebAppServer;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ToDatabase {
     private static Connection conn = connect();
-    private static final int SUCCESS = 1;
     private static final int SERVER_FAILURE = -1;
+    private static final int SUCCESS = 1;
     private static final int FAILURE = 0;
     private static final int USER_NOT_EXSIST = 2;
     private static final int INCORRECT_PWD = 3;
@@ -272,27 +276,148 @@ public class ToDatabase {
 
 
     //create task
-    public static int createTask(int myId, String taskName, String repetition, int frequency){
+    public static int createIndvTask(int myId, String taskName, String repetition, int frequency, int[] supervisors, String date){
         try {
+            //connect
             Statement st = conn.createStatement();
 
-            int rowAffected = st.executeUpdate("INSERT INTO individualtask VALUES (" + myId +", '{" + taskName +
-                    "}', '{" + repetition + "}' ," + frequency +" )");
-            System.out.println("affected " + rowAffected +"rows");
+            // cannot supervise your self
+            if(Arrays.stream(supervisors).anyMatch(x -> x == myId)) {
+                return SERVER_FAILURE;
+            }
+
+            //get taskid
+            ResultSet largestId = st.executeQuery("select max(taskid) from individual");
+            largestId.next();
+            String taskNum = largestId.getString(1);
+            int taskId;
+            if (taskNum == null) {
+                taskId = 0;
+            } else {
+                taskId =  Integer.parseInt(taskNum) + 1;
+            }
+
+            //create task update individual table
+            String supvStr = Arrays.toString(supervisors);
+            int last = supvStr.length() - 1;
+            supvStr = supvStr.substring(1, last);
+            int rowAffected = st.executeUpdate("INSERT INTO individual VALUES (" + taskId + ", " + myId + ", '{" + taskName +
+                    "}', '{" + repetition + "}' , 0, " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
+            System.out.println("insert  " + rowAffected +" rows into individual");
+
+            //update user table for the owner
+            String updateMyTask = "UPDATE users SET myindividual = array_append(myindividual, '%d') WHERE userid=%d;";
+            st.execute(String.format(updateMyTask, taskId, myId));
+
+            String updateSupvTask = "UPDATE users SET superviseindividual = array_append(superviseindividual, '%d') WHERE userid=%d;";
+            String updateNewSupv = "UPDATE users SET newindividualinvite = array_append(newindividualinvite, '%d') WHERE userid=%d;";
+            for (int id : supervisors) {
+                //add taskid into superviseindividual for supervisors
+                st.execute(String.format(updateSupvTask, taskId, id));
+                //add taskid into newindividualinvite for supervisors
+                st.execute(String.format(updateNewSupv, taskId, id));
+            }
             st.close();
-            return myId;
+            return taskId;
         }catch (SQLException e){
             return SERVER_FAILURE;
         }
     }
 
-    public static int deleteTask(int myId, String taskName){
+    public static int deleteIndvTask(int taskId){
         try {
             Statement st = conn.createStatement();
-            st.executeQuery("DELETE FROM individualtask WHERE (userid, taskname) = (" + myId +", '{" + taskName + "}')");
+
+            //find task, userid, supervisors in individual
+            int myId;
+            Long[] supvIds;
+            String findUserId = "select * from individual where taskid = " + taskId;
+            ResultSet resultSet = st.executeQuery(findUserId);
+            System.out.println("findUserId");
+            if(resultSet.next()){
+                myId = Integer.parseInt(resultSet.getString("userid"));
+                System.out.println("get id");
+                supvIds = (Long[]) resultSet.getArray("supervisors").getArray();
+                resultSet.close();
+
+                System.out.println("get supv");
+                //delete task in individual
+                st.executeUpdate("DELETE FROM individual WHERE taskid = " + taskId);
+                System.out.println("delete task");
+            }
+            else{
+                return SERVER_FAILURE;
+            }
+
+            //remove taskId from myIndv and supvIndv in user
+            String updateMyIndv =
+                    "UPDATE users SET myindividual = array_remove(myindividual, '%d') WHERE userid=%d;";
+            st.execute(String.format(updateMyIndv, taskId, myId));
+            String updateSupvIndv =
+                    "UPDATE users SET superviseindividual = array_remove(superviseindividual, '%d') WHERE userid=%d;";
+            for (long supvId : supvIds) {
+                st.execute(String.format(updateSupvIndv, taskId, supvId));
+            }
             st.close();
-            return myId;
+            return SUCCESS;
+
         }catch (SQLException e){
+            return SERVER_FAILURE;
+        }
+    }
+
+    //get task info in new IndvInvite
+    public static String getNewIndvInvite(int userId){
+        try {
+            Statement st = conn.createStatement();
+            String getNewInvite = "select newindividualinvite from users where userid = " + userId;
+            ResultSet newIndvInviteResult = st.executeQuery(getNewInvite);
+            if(newIndvInviteResult.next()){
+                Long[] newIndvTaskIds = (Long[]) newIndvInviteResult.getArray(1).getArray();
+                newIndvInviteResult.close();
+                String newIndvTasks = Arrays.toString(newIndvTaskIds);
+                String indvInviteTaskInfo = "";
+                int last = newIndvTasks.length() - 1;
+                newIndvTasks = newIndvTasks.substring(1, last);
+                //if there is no new invitation, return empty string
+                if(newIndvTasks.length() == 0) {
+                    return "empty";
+                }
+                String getInviteTaskInfo = "select * from individual where taskid in ( " + newIndvTasks + ")";
+                ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
+                JSONArray jsonArray = new JSONArray();
+                String[] jasonIds =
+                        {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
+                String[] columnName =
+                        {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
+                while(inviteTaskInfoResult.next()) {
+                    JSONObject jObj = new JSONObject();
+                    for(int c = 0; c < 7; c++) {
+                        jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
+                    }
+                    jsonArray.put(jObj);
+                }
+                st.close();
+                return jsonArray.toString();
+            } else {
+                return "failure";
+            }
+        }catch (SQLException e){
+            return "failure";
+            //or some universal error control
+        }
+
+    }
+
+    //clear newIndvInvite
+    public static int clearNewIndvInvite(int userId){
+        try {
+            Statement st = conn.createStatement();
+            String updateMyIndv = "UPDATE users SET newindividualinvite = '{}' WHERE userid=" + userId;
+            st.executeUpdate(updateMyIndv);
+            st.close();
+            return SUCCESS;
+        } catch (SQLException e) {
             return SERVER_FAILURE;
         }
     }

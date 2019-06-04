@@ -38,7 +38,5 @@ public class JSONConvert {
             jsonArray.put(jobj);
         }
         return jsonArray.toString();
-
-
     }
 }
