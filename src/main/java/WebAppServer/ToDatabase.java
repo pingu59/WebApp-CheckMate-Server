@@ -397,16 +397,16 @@ public class ToDatabase {
                 Long[] newIndvTaskIds = (Long[]) newIndvInviteResult.getArray(1).getArray();
                 newIndvInviteResult.close();
                 String newIndvTasks = Arrays.toString(newIndvTaskIds);
-                String indvInviteTaskInfo = "";
                 int last = newIndvTasks.length() - 1;
                 newIndvTasks = newIndvTasks.substring(1, last);
+                JSONArray jsonArray = new JSONArray();
                 //if there is no new invitation, return empty string
                 if(newIndvTasks.length() == 0) {
-                    return "empty";
+                    return jsonArray.toString();
                 }
                 String getInviteTaskInfo = "select * from individual where taskid in ( " + newIndvTasks + ")";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
-                JSONArray jsonArray = new JSONArray();
+
                 String[] jasonIds =
                         {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
                 String[] columnName =

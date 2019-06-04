@@ -21,7 +21,7 @@ public class App {
 //        System.out.println("created task : " + taskId);
 
         //System.out.println(ToDatabase.deleteIndvTask(0));
-//        System.out.println(ToDatabase.getNewIndvInvite(1));
+        System.out.println(ToDatabase.getNewIndvInvite(3));
 //        System.out.println(ToDatabase.clearNewIndvInvite(1));
        // System.out.println(ToDatabase.getUserInfo(0));
 //        context.close();
