@@ -85,12 +85,23 @@ public class ToXamarin {
         return String.valueOf(createIndvTask(myId, taskName, repetition, frequency, supervisors, date));
     }
 
-    //not used
+    
     @GetMapping("/deleteIndvTask")
     public String xdeleteIndividualTask(@RequestParam(value="taskId") int taskId){
         return String.valueOf(deleteIndvTask(taskId));
 
     }
+
+    @GetMapping("/getMyIndividual")
+    public String xgetMyIndividual(@RequestParam(value="userId") int userId){
+        return String.valueOf(getAllMyIndv(userId));
+    }
+
+    @GetMapping("/getFriendIndividual")
+    public String xgetFriendIndividual(@RequestParam(value="userId") int userId){
+        return String.valueOf(getAllMyFriendIndv(userId));
+    }
+
 
 
     @GetMapping("/clearIndvInvitation")

@@ -494,6 +494,88 @@ public class ToDatabase {
             throw new RuntimeException(e);
         }
     }
+    public static String getAllMyFriendIndv(int userId){
+        try {
+            Statement st = conn.createStatement();
+            String friendTask = "select superviseindividual from users where userid = " + userId;
+            ResultSet tasks = st.executeQuery(friendTask);
+            if(tasks.next()){
+                Long[] indvTaskIds = (Long[]) tasks.getArray(1).getArray();
+                tasks.close();
+                String indvTasks = Arrays.toString(indvTaskIds);
+                int last = indvTasks.length() - 1;
+                indvTasks = indvTasks.substring(1, last);
+                JSONArray jsonArray = new JSONArray();
+                //if there is no new invitation, return empty string
+                if(indvTasks.length() == 0) {
+                    return jsonArray.toString();
+                }
+                String getInviteTaskInfo = "select * from individual where taskid in ( " + indvTasks + ")";
+                ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
+
+                String[] jasonIds =
+                        {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
+                String[] columnName =
+                        {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
+                while(inviteTaskInfoResult.next()) {
+                    JSONObject jObj = new JSONObject();
+                    for(int c = 0; c < 7; c++) {
+                        jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
+                    }
+                    jsonArray.put(jObj);
+                }
+                st.close();
+                return jsonArray.toString();
+            } else {
+                return "failure";
+            }
+        }catch (SQLException e){
+            return "failure";
+            //or some universal error control
+        }
+    }
+
+    public static String getAllMyIndv(int userId){
+        try {
+            Statement st = conn.createStatement();
+            String mytasksStr = "select myindividual from users where userid = " + userId;
+            ResultSet mytasks = st.executeQuery(mytasksStr);
+            if(mytasks.next()){
+                Long[] indvTaskIds = (Long[]) mytasks.getArray(1).getArray();
+                mytasks.close();
+                String indvTasks = Arrays.toString(indvTaskIds);
+                int last = indvTasks.length() - 1;
+                indvTasks = indvTasks.substring(1, last);
+                JSONArray jsonArray = new JSONArray();
+                //if there is no new invitation, return empty string
+                if(indvTasks.length() == 0) {
+                    return jsonArray.toString();
+                }
+                String getInviteTaskInfo = "select * from individual where taskid in ( " + indvTasks + ")";
+                ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
+
+                String[] jasonIds =
+                        {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
+                String[] columnName =
+                        {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
+                while(inviteTaskInfoResult.next()) {
+                    JSONObject jObj = new JSONObject();
+                    for(int c = 0; c < 7; c++) {
+                        jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
+                    }
+                    jsonArray.put(jObj);
+                }
+                st.close();
+                return jsonArray.toString();
+            } else {
+                return "failure";
+            }
+        }catch (SQLException e){
+            return "failure";
+            //or some universal error control
+        }
+    }
+
 
     //when a supervisor check a task
     public static int supvCheck(int supvid, int taskid, int updatenum){
