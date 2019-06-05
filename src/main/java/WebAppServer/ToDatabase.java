@@ -52,7 +52,7 @@ public class ToDatabase {
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + userId);
             if(userDetail.next()){
-                String username = userDetail.getString(2);
+                String username = userDetail.getString(1);
                 userDetail.close();
                 st.close();
                 return new User(userId, username);
@@ -354,17 +354,13 @@ public class ToDatabase {
             Long[] supvIds;
             String findUserId = "select * from individual where taskid = " + taskId;
             ResultSet resultSet = st.executeQuery(findUserId);
-            System.out.println("findUserId");
             if(resultSet.next()){
                 myId = Integer.parseInt(resultSet.getString("userid"));
-                System.out.println("get id");
                 supvIds = (Long[]) resultSet.getArray("supervisors").getArray();
                 resultSet.close();
 
-                System.out.println("get supv");
                 //delete task in individual
                 st.executeUpdate("DELETE FROM individual WHERE taskid = " + taskId);
-                System.out.println("delete task");
             }
             else{
                 return SERVER_FAILURE;
@@ -442,4 +438,127 @@ public class ToDatabase {
             return SERVER_FAILURE;
         }
     }
+
+    //add progress update, when a task owner does something, return update number of this task
+    public static int addIndvProgressUpdate(int taskid){
+        try {
+            Statement st = conn.createStatement();
+            int updateNum;
+            //select supervisors for this task
+            String getSupervisors = "select supervisors from individual where taskid = " + taskid;
+            ResultSet supvResult = st.executeQuery(getSupervisors);
+            if(supvResult.next()) {
+                Long[] supervisors = (Long[]) supvResult.getArray(1).getArray();
+                supvResult.close();
+
+                //find number of update for this task
+                ResultSet maxUpdateNum = st.executeQuery("select max(updatenum) from indvprogressupdate");
+                maxUpdateNum.next();
+                String updateNumStr = maxUpdateNum.getString(1);
+                updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
+
+                //update indvprogressupdate for supervisors for this task
+                for(Long supv: supervisors) {
+                    int rowAffected = st.executeUpdate("INSERT INTO indvprogressupdate VALUES (" +
+                            supv + ", " + taskid + ", " + updateNum + " )");
+                    System.out.println("insert  " + rowAffected +" rows into indvprogressupdate");
+                }
+            } else {
+                return SERVER_FAILURE;
+            }
+            st.close();
+            return updateNum;
+        } catch (SQLException e) {
+            return SERVER_FAILURE;
+        }
+    }
+
+    //push task update to supervisors TODO:change to return Json string containing more info
+    public static String supvUpdate(int supvid) { //taskid and update number
+        try {
+            Statement st = conn.createStatement();
+            //select supervisor for this task
+            String getUpdate = "select * from indvprogressupdate where supervisorid = " + supvid;
+            JSONArray updates = new JSONArray();
+            ResultSet updateResult = st.executeQuery(getUpdate);
+            while(updateResult.next()) {
+                JSONObject update = new JSONObject();
+                update.put("TaskID", updateResult.getString("taskid"));
+                update.put("UpdateNumber", updateResult.getString("updatenum"));
+                updates.put(update);
+            }
+            updateResult.close();
+            st.close();
+            return updates.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //when a supervisor check a task
+    public static int supvCheck(int supvid, int taskid, int updatenum){
+        try {
+            Statement st = conn.createStatement();
+            //delete all entries for this (taskid, updatenum) in indvprogressupdate
+            String deleteEntries = "DELETE FROM indvprogressupdate WHERE  (taskid, updatenum) = (" + taskid + "," + updatenum + ") AND supervisorid != " + supvid;
+            st.executeUpdate(deleteEntries);
+
+            //update task owner progress(increment) in individual
+            //TODO:check deadline, repetition etc.
+            String updateMyIndv = "UPDATE individual SET progress = progress + 1 WHERE taskid =" + taskid;
+            st.executeUpdate(updateMyIndv);
+            //add updatenum to indvupdate in user
+            ResultSet ownerResult = st.executeQuery("SELECT userid FROM individual WHERE taskid =" + taskid);
+            ownerResult.next();
+            int ownerid = Integer.parseInt(ownerResult.getString("userid"));
+            String addIndvUpdate = "UPDATE users SET indvupdate = array_append(indvupdate, '%d') WHERE userid=%d;";
+            st.execute(String.format(addIndvUpdate, updatenum , ownerid));
+            st.close();
+            return SUCCESS;
+        } catch (SQLException e) {
+            return SERVER_FAILURE;
+        }
+    }
+
+    //when task owner get the indvupdate
+    public static String indvOwnerUpdate(int ownerId) {
+        try {
+            Statement st = conn.createStatement();
+            //find list of update number in user
+            String getUpdate = "select indvupdate from users where userid = " + ownerId;
+            ResultSet updateResult = st.executeQuery(getUpdate);
+
+            JSONArray jsonArray = new JSONArray();
+            if(updateResult.next()) {
+                Long[] updateNums = (Long[]) updateResult.getArray(1).getArray();
+                for (Long num : updateNums) {
+                    ResultSet taskResult = st.executeQuery("SELECT * FROM indvprogressupdate WHERE updatenum =" + num);
+                    if(taskResult.next()) {
+                        int taskid = Integer.parseInt(taskResult.getString("taskid"));
+                        int checkerid = Integer.parseInt(taskResult.getString("supervisorid"));
+
+                        JSONObject jobj = new JSONObject();
+                        jobj.put("TaskID", taskid);
+                        jobj.put("UpdateNum", num);
+                        jobj.put("CheckerID", checkerid);
+                        jsonArray.put(jobj);
+                        taskResult.close();
+
+                        //delete entries in indvprogressupdate
+                        String deleteEntries = "DELETE FROM indvprogressupdate WHERE  updatenum = " + num ;
+                        st.executeUpdate(deleteEntries);
+                    }
+                }
+            }
+            //empty individual update in user
+            String deleteUpdate = "UPDATE users SET indvupdate = '{}' where userid = " + ownerId;
+            st.executeUpdate(deleteUpdate);
+            updateResult.close();
+            st.close();
+            return jsonArray.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

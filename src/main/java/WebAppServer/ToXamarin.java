@@ -102,6 +102,28 @@ public class ToXamarin {
     @GetMapping("/getNewIndvInvite")
     public String xgetNewIndvInvite(@RequestParam(value="userId") int userId){
         return String.valueOf(getNewIndvInvite(userId));
-
     }
+
+    @GetMapping("/addIndvProgressUpdate")
+    public String xaddIndvProgressUpdate(@RequestParam(value="taskId") int taskId){
+        return String.valueOf(addIndvProgressUpdate(taskId));
+    }
+
+    @GetMapping("/supvUpdate")
+    public String xsupvUpdate(@RequestParam(value="supervisorId") int supvId){
+        return String.valueOf(supvUpdate(supvId));
+    }
+
+    @GetMapping("/supvCheck")
+    public String xsupvCheck(@RequestParam(value="supervisorId") int supvId,
+                             @RequestParam(value="taskId") int taskId,
+                             @RequestParam(value="updateNumber") int updateNum){
+        return String.valueOf(supvCheck(supvId, taskId, updateNum));
+    }
+
+    @GetMapping("/indvOwnerUpdate")
+    public String xindvOwnerUpdate(@RequestParam(value="ownerId") int ownerId){
+        return String.valueOf(indvOwnerUpdate(ownerId));
+    }
+
 }
