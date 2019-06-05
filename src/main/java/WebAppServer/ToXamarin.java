@@ -85,7 +85,7 @@ public class ToXamarin {
         return String.valueOf(createIndvTask(myId, taskName, repetition, frequency, supervisors, date));
     }
 
-    
+
     @GetMapping("/deleteIndvTask")
     public String xdeleteIndividualTask(@RequestParam(value="taskId") int taskId){
         return String.valueOf(deleteIndvTask(taskId));
