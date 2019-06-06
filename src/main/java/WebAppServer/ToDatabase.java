@@ -645,9 +645,9 @@ public class ToDatabase {
                         jsonArray.put(jobj);
                         taskResult.close();
 
-                        //delete entries in indvprogressupdate
-                        String deleteEntries = "DELETE FROM indvprogressupdate WHERE  updatenum = " + num ;
-                        st.executeUpdate(deleteEntries);
+                        //delete entries in indvprogressupdate DON'T DELETE FOR HISTORY
+//                        String deleteEntries = "DELETE FROM indvprogressupdate WHERE  updatenum = " + num ;
+//                        st.executeUpdate(deleteEntries);
                     }
                 }
             }
@@ -657,6 +657,54 @@ public class ToDatabase {
             updateResult.close();
             st.close();
             return jsonArray.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //task history: checkerName/updateNumber/taskName
+    public static String getIndvHistory(int userid) {
+        try {
+            Statement st = conn.createStatement();
+            //get individual tasks for this user
+            String getIndvTaskId = "select myindividual from users where userid = " + userid;
+            ResultSet taskIdResult = st.executeQuery(getIndvTaskId);
+            taskIdResult.next();
+            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
+            JSONArray history = new JSONArray();
+
+            for (Long taskId : taskIds) {
+                //get taskName from individual for each individual task
+                String getIndvTaskName = "select taskname from individual where taskid = " + taskId;
+                ResultSet taskNameResult = st.executeQuery(getIndvTaskName);
+                if(taskNameResult.next()) {
+                    String taskName = taskNameResult.getString(1);
+
+                    //get checkerid for each taskupdate
+                    String getCheckerId = "select * from indvprogressupdate where taskid = " + taskId;
+                    ResultSet checkerIdResult = st.executeQuery(getCheckerId);
+                    while(checkerIdResult.next()) {
+                        //get checkerName from users
+                        int checkerId = Integer.parseInt(checkerIdResult.getString("checkerid"));
+                        int updateNum = Integer.parseInt(checkerIdResult.getString("updatenum"));
+
+                        Statement st1 = conn.createStatement();
+                        String getCheckerName = "select username from users where userid = " + checkerId;
+                        ResultSet checkerNameResult = st1.executeQuery(getCheckerName);
+                        if(checkerNameResult.next()) {
+                            String checkerName = checkerNameResult.getString(1);
+                            JSONObject obj = new JSONObject();
+                            obj.put("taskName", taskName);
+                            obj.put("updateNumber", updateNum);
+                            obj.put("checkerName", checkerName);
+                            history.put(obj);
+                        }
+                        st1.close();
+                    }
+                }
+            }
+            st.close();
+            return history.toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

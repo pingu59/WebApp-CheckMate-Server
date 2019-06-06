@@ -137,4 +137,9 @@ public class ToXamarin {
         return String.valueOf(indvOwnerUpdate(ownerId));
     }
 
+    @GetMapping("/getHistory")
+    public String xgetHistory(@RequestParam(value="userId") int userId){
+        return String.valueOf(getIndvHistory(userId));
+    }
+
 }
