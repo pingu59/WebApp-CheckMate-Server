@@ -544,7 +544,7 @@ public class ToDatabase {
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
                 failure_code = -4;
                 String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d, -1, %s)";
-                String sndBaseString = String.format(updateProgress, updateNum, taskid, "{"+image+"}");
+                String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'");
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
