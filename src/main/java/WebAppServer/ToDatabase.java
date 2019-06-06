@@ -4,6 +4,9 @@ package WebAppServer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -522,7 +525,7 @@ public class ToDatabase {
     }
 
     //add progress update, when a task owner does something, return update number of this task
-    public static int addIndvProgressUpdate(int taskid){
+    public static int addIndvProgressUpdate(int taskid, String image){
         try {
             Statement st = conn.createStatement();
             int updateNum;
@@ -539,9 +542,11 @@ public class ToDatabase {
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
 
-                String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d)";
-                st.executeUpdate(String.format(updateProgress, updateNum, taskid));
-                System.out.println("herere");
+                String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d, -1, %s)";
+                String sndBaseString = String.format(updateProgress, updateNum, taskid, image);
+                PreparedStatement ps = conn.prepareStatement(sndBaseString);
+                ps.executeUpdate();
+                ps.close();
 
                 //update user for supervisors for this task
                 for(Long supv: supervisors) {
@@ -572,13 +577,17 @@ public class ToDatabase {
                 JSONArray updates = new JSONArray();
                 //for each update number get taskid in indvprogressupdate
                 for (Long num : updateNums) {
-                    String getTaskId = "select taskid from indvprogressupdate where updatenum = " + num;
-                    ResultSet taskId = st.executeQuery(getTaskId);
-                    taskId.next();
-                    int taskid = Integer.parseInt(taskId.getString(1));
+                    PreparedStatement ps = conn.prepareStatement("select * from indvprogressupdate where updatenum = " + num);
+                    ResultSet taskUpdates = ps.executeQuery();
+                    taskUpdates.next();
+                    int taskid = Integer.parseInt(taskUpdates.getString(2));
+                    String image = taskUpdates.getString(4);
+                    taskUpdates.close();
+                    ps.close();
                     JSONObject update = new JSONObject();
                     update.put("TaskID", taskid);
                     update.put("UpdateNumber", num);
+                    update.put("image", image);
                     updates.put(update);
                 }
                 st.close();
