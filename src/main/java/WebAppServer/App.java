@@ -13,7 +13,7 @@ public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
         //added for testing
-        ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
+ //       ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
 //        int[] sup = {1};
 //        int taskId = ToDatabase.createIndvTask(0, "test", "weekly", 13,
 //                sup, "2020-12-12");
