@@ -115,9 +115,9 @@ public class ToXamarin {
         return String.valueOf(getNewIndvInvite(userId));
     }
 
-    @GetMapping("/addIndvProgressUpdate")
+    @PostMapping(path = "/addIndvProgressUpdate")
     public String xaddIndvProgressUpdate(@RequestParam(value="taskId") int taskId,
-                                         @RequestParam(value="image") String image){
+                                         @RequestBody String image){
         return String.valueOf(addIndvProgressUpdate(taskId, image));
     }
 
