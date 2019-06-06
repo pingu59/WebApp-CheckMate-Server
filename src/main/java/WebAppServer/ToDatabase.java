@@ -598,11 +598,11 @@ public class ToDatabase {
 
             //add checkerid in indvprogressupdate for this updatenum
             String addChecker = "UPDATE indvprogressupdate SET checkerid = %d WHERE  updatenum = " + updatenum ;
-            st.execute(String.format(addChecker, supvid));
+            st.executeUpdate(String.format(addChecker, supvid));
 
             //remove updatenum from indvsupvupdate in user for supv
             String removeUpdate = "UPDATE users SET indvsupvupdate = array_remove(indvsupvupdate, '%d') WHERE  userid = " + supvid ;
-            st.execute(String.format(removeUpdate, updatenum));
+            st.executeUpdate(String.format(removeUpdate, updatenum));
 
             //update task owner progress(increment) in individual TODO:check deadline, repetition etc.
             String updateMyIndv = "UPDATE individual SET progress = progress + 1 WHERE taskid =" + taskid;
