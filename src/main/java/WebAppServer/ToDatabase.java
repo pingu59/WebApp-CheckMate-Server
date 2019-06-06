@@ -526,6 +526,7 @@ public class ToDatabase {
 
     //add progress update, when a task owner does something, return update number of this task
     public static int addIndvProgressUpdate(int taskid, String image){
+        int failure_code = -2;
         try {
             Statement st = conn.createStatement();
             int updateNum;
@@ -535,19 +536,19 @@ public class ToDatabase {
             if(supvResult.next()) {
                 Long[] supervisors = (Long[]) supvResult.getArray(1).getArray();
                 supvResult.close();
-
+                failure_code = -3;
                 //find number of update for this task
                 ResultSet maxUpdateNum = st.executeQuery("select max(updatenum) from indvprogressupdate");
                 maxUpdateNum.next();
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
-
+                failure_code = -4;
                 String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d, -1, %s)";
                 String sndBaseString = String.format(updateProgress, updateNum, taskid, "{"+image+"}");
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
-
+                failure_code = -5;
                 //update user for supervisors for this task
                 for(Long supv: supervisors) {
                     st.executeUpdate("UPDATE users SET indvsupvupdate = array_append(indvsupvupdate, '" + updateNum +"') WHERE userid = " + supv);
@@ -559,7 +560,7 @@ public class ToDatabase {
             st.close();
             return updateNum;
         } catch (SQLException e) {
-            return SERVER_FAILURE;
+            return failure_code;
         }
     }
 
