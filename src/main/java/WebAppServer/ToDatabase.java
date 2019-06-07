@@ -186,7 +186,7 @@ public class ToDatabase {
             String addInbox = "UPDATE users SET friendupdate = array_append(friendupdate, '%d') WHERE userid=%d;";
             st.execute(String.format(addInbox, myid, requestid));
             st.close();
-            return JSONConvert.userToJSON(getUser(requestid));
+            return getUserInfo(requestid);
         }catch (SQLException e){
             //or some universal error control
             return "failure";
@@ -526,7 +526,6 @@ public class ToDatabase {
 
     //add progress update, when a task owner does something, return update number of this task
     public static int addIndvProgressUpdate(int taskid, String image){
-        int failure_code = -2;
         try {
             Statement st = conn.createStatement();
             int updateNum;
@@ -536,19 +535,16 @@ public class ToDatabase {
             if(supvResult.next()) {
                 Long[] supervisors = (Long[]) supvResult.getArray(1).getArray();
                 supvResult.close();
-                failure_code = -3;
                 //find number of update for this task
                 ResultSet maxUpdateNum = st.executeQuery("select max(updatenum) from indvprogressupdate");
                 maxUpdateNum.next();
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
-                failure_code = -4;
                 String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d, -1, %s)";
                 String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'");
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
-                failure_code = -5;
                 //update user for supervisors for this task
                 for(Long supv: supervisors) {
                     st.executeUpdate("UPDATE users SET indvsupvupdate = array_append(indvsupvupdate, '" + updateNum +"') WHERE userid = " + supv);
@@ -560,12 +556,13 @@ public class ToDatabase {
             st.close();
             return updateNum;
         } catch (SQLException e) {
-            return failure_code;
+            return SERVER_FAILURE;
         }
     }
 
     //push task update to supervisors
     public static String supvUpdate(int supvid) { //taskid and update number
+        int failureid = -1;
         try {
             Statement st = conn.createStatement();
             //select update numbers for tasks that this supervisor supervises
@@ -574,22 +571,27 @@ public class ToDatabase {
             if(updateResult.next()) {
                 Long[] updateNums = (Long[]) updateResult.getArray(1).getArray();
                 updateResult.close();
-
+                failureid = -2;
                 JSONArray updates = new JSONArray();
                 //for each update number get taskid in indvprogressupdate
                 for (Long num : updateNums) {
                     PreparedStatement ps = conn.prepareStatement("select * from indvprogressupdate where updatenum = " + num);
                     ResultSet taskUpdates = ps.executeQuery();
+                    failureid = -3;
                     taskUpdates.next();
-                    int taskid = Integer.parseInt(taskUpdates.getString(2));
+                    failureid = -6;
                     String image = taskUpdates.getString(4);
+                    failureid = -7;
+                    int taskid = Integer.parseInt(taskUpdates.getString(2));
+                    failureid = -4;
                     taskUpdates.close();
-                    ps.close();
                     JSONObject update = new JSONObject();
                     update.put("TaskID", taskid);
                     update.put("UpdateNumber", num);
                     update.put("image", image);
                     updates.put(update);
+                    ps.close();
+                    failureid = -5;
                 }
                 st.close();
                 return updates.toString();
@@ -597,7 +599,7 @@ public class ToDatabase {
                 return "failure";
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return "" + failureid;
         }
     }
 
