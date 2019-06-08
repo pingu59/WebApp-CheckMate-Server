@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="76958ccb-8545-43b7-aedb-63b4ad1f3990" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" afterDir="false" />
     </list>
@@ -27,7 +28,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-122">
+            <state relative-caret-position="-150">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
             </state>
           </provider>
@@ -45,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="120" column="42" selection-start-line="120" selection-start-column="42" selection-end-line="120" selection-end-column="42" />
+            <state relative-caret-position="338">
+              <caret line="132" column="51" selection-start-line="132" selection-start-column="51" selection-end-line="132" selection-end-column="51" />
               <folding>
                 <element signature="e#3564#3565#0" expanded="true" />
                 <element signature="e#3623#3624#0" expanded="true" />
@@ -60,8 +61,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="565" column="35" lean-forward="true" selection-start-line="565" selection-start-column="35" selection-end-line="565" selection-end-column="35" />
+            <state relative-caret-position="-1194">
+              <caret line="598" column="93" selection-start-line="598" selection-start-column="93" selection-end-line="598" selection-end-column="93" />
             </state>
           </provider>
         </entry>
@@ -89,7 +90,6 @@
       <find>getUserIn</find>
       <find>getuser</find>
       <find>createin</find>
-      <find>in</find>
       <find>grou</find>
       <find>getAllmyin</find>
       <find>create</find>
@@ -105,6 +105,8 @@
       <find>getall</find>
       <find>inbox</find>
       <find>updaten</find>
+      <find>indvo</find>
+      <find>in</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -241,24 +243,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/JSONConvert.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-122">
+        <state relative-caret-position="-150">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="120" column="42" selection-start-line="120" selection-start-column="42" selection-end-line="120" selection-end-column="42" />
+        <state relative-caret-position="338">
+          <caret line="132" column="51" selection-start-line="132" selection-start-column="51" selection-end-line="132" selection-end-column="51" />
           <folding>
             <element signature="e#3564#3565#0" expanded="true" />
             <element signature="e#3623#3624#0" expanded="true" />
@@ -268,10 +263,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/JSONConvert.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="565" column="35" lean-forward="true" selection-start-line="565" selection-start-column="35" selection-end-line="565" selection-end-column="35" />
+        <state relative-caret-position="-1194">
+          <caret line="598" column="93" selection-start-line="598" selection-start-column="93" selection-end-line="598" selection-end-column="93" />
         </state>
       </provider>
     </entry>

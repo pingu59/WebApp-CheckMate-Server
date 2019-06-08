@@ -576,27 +576,27 @@ public class ToDatabase {
     }
 
     //when a supervisor check a task
-    public static int supvCheck(int supvid, int taskid, int updatenum){
+    public static int supvCheck(int myId, int taskid, int updatenum){
         try {
             Statement st = conn.createStatement();
 
             //add checkerid in indvprogressupdate for this updatenum
-            String addChecker = "UPDATE indvprogressupdate SET checkerid = %d WHERE  updatenum = " + updatenum ;
-            st.executeUpdate(String.format(addChecker, supvid));
+            String addChecker = "UPDATE progressupdate SET checkerid = %d WHERE  updatenum = " + updatenum ;
+            st.executeUpdate(String.format(addChecker, myId));
 
             //remove updatenum from indvsupvupdate in user for supv
-            String removeUpdate = "UPDATE users SET indvsupvupdate = array_remove(indvsupvupdate, '%d') WHERE  userid = " + supvid ;
+            String removeUpdate = "UPDATE users SET otherstaskupdate = array_remove(otherstaskupdate, '%d') WHERE  userid = " + myId ;
             st.executeUpdate(String.format(removeUpdate, updatenum));
 
             //update task owner progress(increment) in individual TODO:check deadline, repetition etc.
-            String updateMyIndv = "UPDATE individual SET progress = progress + 1 WHERE taskid =" + taskid;
+            String updateMyIndv = "UPDATE grouptask SET progress = progress + 1 WHERE taskid =" + taskid;
             st.executeUpdate(updateMyIndv);
 
             //add updatenum to indvupdate in user
-            ResultSet ownerResult = st.executeQuery("SELECT userid FROM individual WHERE taskid =" + taskid);
+            ResultSet ownerResult = st.executeQuery("SELECT userid FROM grouptask WHERE taskid =" + taskid);
             ownerResult.next();
             int ownerid = Integer.parseInt(ownerResult.getString("userid"));
-            String addIndvUpdate = "UPDATE users SET indvupdate = array_append(indvupdate, '%d') WHERE userid=%d;";
+            String addIndvUpdate = "UPDATE users SET mytaskupdate = array_append(mytaskupdate, '%d') WHERE userid=%d;";
             st.execute(String.format(addIndvUpdate, updatenum , ownerid));
             st.close();
             return SUCCESS;
@@ -606,18 +606,18 @@ public class ToDatabase {
     }
 
     //when task owner get the indvupdate //error: always empty
-    public static String indvOwnerUpdate(int ownerId) {
+    public static String checkedNotification(int myId) {
         try {
             Statement st = conn.createStatement();
             //find list of update number in user
-            String getUpdate = "select indvupdate from users where userid = " + ownerId;
+            String getUpdate = "select mytaskupdate from users where userid = " + myId;
             ResultSet updateResult = st.executeQuery(getUpdate);
 
             JSONArray jsonArray = new JSONArray();
             if(updateResult.next()) {
                 Long[] updateNums = (Long[]) updateResult.getArray(1).getArray();
                 for (Long num : updateNums) {
-                    ResultSet taskResult = st.executeQuery("SELECT * FROM indvprogressupdate WHERE updatenum =" + num);
+                    ResultSet taskResult = st.executeQuery("SELECT * FROM progressupdate WHERE updatenum =" + num);
                     if(taskResult.next()) {
                         int taskid = Integer.parseInt(taskResult.getString("taskid"));
                         int checkerid = Integer.parseInt(taskResult.getString("checkerid"));
@@ -636,7 +636,7 @@ public class ToDatabase {
                 }
             }
             //empty individual update in user
-            String deleteUpdate = "UPDATE users SET indvupdate = '{}' where userid = " + ownerId;
+            String deleteUpdate = "UPDATE users SET mytaskupdate = '{}' where userid = " + myId;
             st.executeUpdate(deleteUpdate);
             updateResult.close();
             st.close();

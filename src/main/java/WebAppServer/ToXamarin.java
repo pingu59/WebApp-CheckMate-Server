@@ -126,16 +126,16 @@ public class ToXamarin {
         return String.valueOf(supvUpdate(supvId));
     }
 
-    @GetMapping("/supvCheck")
-    public String xsupvCheck(@RequestParam(value="supervisorId") int supvId,
+    @GetMapping("/sendNewCheck")
+    public String xsupvCheck(@RequestParam(value="myId") int myId,
                              @RequestParam(value="taskId") int taskId,
                              @RequestParam(value="updateNumber") int updateNum){
-        return String.valueOf(supvCheck(supvId, taskId, updateNum));
+        return String.valueOf(supvCheck(myId, taskId, updateNum));
     }
 
-    @GetMapping("/indvOwnerUpdate")
-    public String xindvOwnerUpdate(@RequestParam(value="ownerId") int ownerId){
-        return String.valueOf(indvOwnerUpdate(ownerId));
+    @GetMapping("/checkedNotification")
+    public String xcheckedNotification(@RequestParam(value="myId") int myId){
+        return String.valueOf(checkedNotification(myId));
     }
 
     @GetMapping("/getHistory")
