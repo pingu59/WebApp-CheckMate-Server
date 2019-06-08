@@ -495,30 +495,30 @@ public class ToDatabase {
     }
 
     //add progress update, when a task owner does something, return update number of this task
-    public static int addIndvProgressUpdate(int taskid, String image){
+    public static int addProgressUpdate(int taskid, String image){
         try {
             Statement st = conn.createStatement();
             int updateNum;
             //select supervisors for this task
-            String getSupervisors = "select supervisors from individual where taskid = " + taskid;
+            String getSupervisors = "select members from grouptask where taskid = " + taskid;
             ResultSet supvResult = st.executeQuery(getSupervisors);
             if(supvResult.next()) {
                 Long[] supervisors = (Long[]) supvResult.getArray(1).getArray();
                 supvResult.close();
                 //find number of update for this task
-                ResultSet maxUpdateNum = st.executeQuery("select max(updatenum) from indvprogressupdate");
+                ResultSet maxUpdateNum = st.executeQuery("select max(updatenum) from progressupdate");
                 maxUpdateNum.next();
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
-                String updateProgress = "INSERT INTO indvprogressupdate VALUES(%d, %d, -1, %s)";
+                String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1, %s)";
                 String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'");
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
                 //update user for supervisors for this task
                 for(Long supv: supervisors) {
-                    st.executeUpdate("UPDATE users SET indvsupvupdate = array_append(indvsupvupdate, '" + updateNum +"') WHERE userid = " + supv);
-                    System.out.println("update indvsupvupdate in users for supervisor " + supv);
+                    st.executeUpdate("UPDATE users SET otherstaskupdate = array_append(otherstaskupdate, '" + updateNum +"') WHERE userid = " + supv);
+                    System.out.println("update otherstaskupdate in users for members " + supv);
                 }
             } else {
                 return SERVER_FAILURE;

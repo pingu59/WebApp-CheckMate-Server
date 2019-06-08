@@ -3,8 +3,6 @@ import java.util.Arrays;
 
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static WebAppServer.ToDatabase.*;
 
 @RestController
@@ -115,10 +113,10 @@ public class ToXamarin {
         return String.valueOf(getNewInvite(userId));
     }
 
-    @PostMapping(path = "/addIndvProgressUpdate")
+    @PostMapping(path = "/addProgressUpdate")
     public String xaddIndvProgressUpdate(@RequestParam(value="taskId") int taskId,
                                          @RequestBody String image){
-        return String.valueOf(addIndvProgressUpdate(taskId, image));
+        return String.valueOf(addProgressUpdate(taskId, image));
     }
 
     @GetMapping("/supvUpdate")
