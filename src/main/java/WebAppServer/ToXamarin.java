@@ -92,9 +92,9 @@ public class ToXamarin {
 
     }
 
-    @GetMapping("/getMyIndividual")
-    public String xgetMyIndividual(@RequestParam(value="userId") int userId){
-        return String.valueOf(getAllMyIndv(userId));
+    @GetMapping("/getMyTask")
+    public String xgetMyTask(@RequestParam(value="userId") int userId){
+        return String.valueOf(getAllMyTask(userId));
     }
 
     @GetMapping("/getFriendIndividual")

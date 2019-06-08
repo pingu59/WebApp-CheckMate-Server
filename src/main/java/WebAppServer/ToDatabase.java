@@ -458,29 +458,29 @@ public class ToDatabase {
         }
     }
 
-    public static String getAllMyIndv(int userId){
+    public static String getAllMyTask(int userId){
         try {
             Statement st = conn.createStatement();
-            String mytasksStr = "select myindividual from users where userid = " + userId;
+            String mytasksStr = "select mytask from users where userid = " + userId;
             ResultSet mytasks = st.executeQuery(mytasksStr);
             if(mytasks.next()){
-                Long[] indvTaskIds = (Long[]) mytasks.getArray(1).getArray();
+                Long[] taskid = (Long[]) mytasks.getArray(1).getArray();
                 mytasks.close();
-                String indvTasks = Arrays.toString(indvTaskIds);
-                int last = indvTasks.length() - 1;
-                indvTasks = indvTasks.substring(1, last);
+                String tasks = Arrays.toString(taskid);
+                int last = tasks.length() - 1;
+                tasks = tasks.substring(1, last);
                 JSONArray jsonArray = new JSONArray();
                 //if there is no new invitation, return empty string
-                if(indvTasks.length() == 0) {
+                if(tasks.length() == 0) {
                     return jsonArray.toString();
                 }
-                String getInviteTaskInfo = "select * from individual where taskid in ( " + indvTasks + ")";
+                String getInviteTaskInfo = "select * from group where taskid in ( " + tasks + ")";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
-                        {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
                 String[] columnName =
-                        {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
                 while(inviteTaskInfoResult.next()) {
                     JSONObject jObj = new JSONObject();
                     for(int c = 0; c < 7; c++) {
