@@ -585,6 +585,7 @@ public class ToDatabase {
             st.executeUpdate(String.format(addChecker, myId));
 
             //remove updatenum from indvsupvupdate in user for supv
+            //TODO remove all otherstaskupdate of all group member
             String removeUpdate = "UPDATE users SET otherstaskupdate = array_remove(otherstaskupdate, '%d') WHERE  userid = " + myId ;
             st.executeUpdate(String.format(removeUpdate, updatenum));
 
