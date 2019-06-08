@@ -495,7 +495,7 @@ public class ToDatabase {
     }
 
     //add progress update, when a task owner does something, return update number of this task
-    public static int addProgressUpdate(int taskid, String image){
+    public static int addProgressUpdate(int taskid, String image, int myId){
         try {
             Statement st = conn.createStatement();
             int updateNum;
@@ -510,8 +510,8 @@ public class ToDatabase {
                 maxUpdateNum.next();
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
-                String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1, %s)";
-                String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'");
+                String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1, %s, %d)";
+                String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'", myId);
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
@@ -553,11 +553,13 @@ public class ToDatabase {
                     String image = taskUpdates.getString(4);
                     failureid = -7;
                     int taskid = Integer.parseInt(taskUpdates.getString(2));
+                    int userId = Integer.parseInt(taskUpdates.getString(5));
                     failureid = -4;
                     taskUpdates.close();
                     JSONObject update = new JSONObject();
                     update.put("TaskID", taskid);
                     update.put("UpdateNumber", num);
+                    update.put("userId", userId);
                     update.put("image", image);
                     updates.put(update);
                     ps.close();
