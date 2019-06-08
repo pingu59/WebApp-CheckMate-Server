@@ -593,7 +593,7 @@ public class ToDatabase {
             //st.executeUpdate(updateMyIndv);
 
             //add updatenum to indvupdate in user
-            ResultSet ownerResult = st.executeQuery("SELECT userid FROM grouptask WHERE taskid =" + taskid);
+            ResultSet ownerResult = st.executeQuery("SELECT userid FROM progressupdate WHERE updatenum =" + updatenum);
             ownerResult.next();
             int ownerid = Integer.parseInt(ownerResult.getString("userid"));
             String addIndvUpdate = "UPDATE users SET mytaskupdate = array_append(mytaskupdate, '%d') WHERE userid=%d;";
