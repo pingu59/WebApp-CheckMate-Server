@@ -536,7 +536,7 @@ public class ToDatabase {
         try {
             Statement st = conn.createStatement();
             //select update numbers for tasks that this supervisor supervises
-            String getUpdate = "select indvsupvupdate from users where userid = " + supvid;
+            String getUpdate = "select otherstaskupdate from users where userid = " + supvid;
             ResultSet updateResult = st.executeQuery(getUpdate);
             if(updateResult.next()) {
                 Long[] updateNums = (Long[]) updateResult.getArray(1).getArray();
@@ -545,7 +545,7 @@ public class ToDatabase {
                 JSONArray updates = new JSONArray();
                 //for each update number get taskid in indvprogressupdate
                 for (Long num : updateNums) {
-                    PreparedStatement ps = conn.prepareStatement("select * from indvprogressupdate where updatenum = " + num);
+                    PreparedStatement ps = conn.prepareStatement("select * from progressupdate where updatenum = " + num);
                     ResultSet taskUpdates = ps.executeQuery();
                     failureid = -3;
                     taskUpdates.next();

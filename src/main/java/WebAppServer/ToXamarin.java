@@ -119,8 +119,8 @@ public class ToXamarin {
         return String.valueOf(addProgressUpdate(taskId, image));
     }
 
-    @GetMapping("/supvUpdate")
-    public String xsupvUpdate(@RequestParam(value="supervisorId") int supvId){
+    @GetMapping("/friendUpdate")
+    public String xsupvUpdate(@RequestParam(value="myId") int supvId){
         return String.valueOf(supvUpdate(supvId));
     }
 
