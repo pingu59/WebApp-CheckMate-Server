@@ -50,29 +50,6 @@ public class ToDatabase {
         }
     }
 
-    public static User getUser(int userId){
-        try {
-            Statement st = conn.createStatement();
-            ResultSet userDetail = st.executeQuery("select * from users where userid = " + userId);
-            if(userDetail.next()){
-                String username = userDetail.getString(2);
-                userDetail.close();
-                st.close();
-                return new User(userId, username);
-            }else{
-                System.err.println("NO SUCH USER!!");
-                userDetail.close();
-                st.close();
-                // CHANGE THIS !! REFACTOR
-                return null;
-            }
-        }catch (SQLException e){
-            //  System.out.println("Here");
-            // CHANGE THIS ??
-            throw new RuntimeException(e);
-        }
-    }
-
     public static int register(String username, String password){
         // add assertion to the length of the user name at xamarin!!
         try {
@@ -300,13 +277,13 @@ public class ToDatabase {
 
 
     //create task
-    public static int createIndvTask(int myId, String taskName, String repetition, int frequency, int[] supervisors, String date){
+    public static int createTask(int myId, String taskName, String repetition, int frequency, int[] members, String date){
         try {
             //connect
             Statement st = conn.createStatement();
 
             // cannot supervise your self
-            if(Arrays.stream(supervisors).anyMatch(x -> x == myId)) {
+            if(Arrays.stream(members).anyMatch(x -> x == myId)) {
                 return SERVER_FAILURE;
             }
 
@@ -322,24 +299,22 @@ public class ToDatabase {
             }
 
             //create task update individual table
-            String supvStr = Arrays.toString(supervisors);
+            String supvStr = Arrays.toString(members);
             int last = supvStr.length() - 1;
             supvStr = supvStr.substring(1, last);
-            int rowAffected = st.executeUpdate("INSERT INTO individual VALUES (" + taskId + ", " + myId + ", '{" + taskName +
-                    "}', '{" + repetition + "}' , 0, " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
+            int rowAffected = st.executeUpdate("INSERT INTO group VALUES (" + taskId + ", " + myId + ", '{" + taskName +
+                    "}', '{" + repetition + "}' , " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
             System.out.println("insert  " + rowAffected +" rows into individual");
 
             //update user table for the owner
-            String updateMyTask = "UPDATE users SET myindividual = array_append(myindividual, '%d') WHERE userid=%d;";
+            String updateMyTask = "UPDATE users SET mytask = array_append(mytask, '%d') WHERE userid in ( " + members + ")";
             st.execute(String.format(updateMyTask, taskId, myId));
-
-            String updateSupvTask = "UPDATE users SET superviseindividual = array_append(superviseindividual, '%d') WHERE userid=%d;";
-            String updateNewSupv = "UPDATE users SET newindividualinvite = array_append(newindividualinvite, '%d') WHERE userid=%d;";
-            for (int id : supervisors) {
-                //add taskid into superviseindividual for supervisors
-                st.execute(String.format(updateSupvTask, taskId, id));
-                //add taskid into newindividualinvite for supervisors
-                st.execute(String.format(updateNewSupv, taskId, id));
+            String updateNewSupv = "UPDATE users SET newtaskinvite = array_append(newtaskinvite, '%d') WHERE userid=%d;";
+            for (int id : members) {
+                if(id != myId){
+                    //add taskid into newtaskinvite
+                    st.execute(String.format(updateNewSupv, taskId, id));
+                }
             }
             st.close();
             return taskId;
