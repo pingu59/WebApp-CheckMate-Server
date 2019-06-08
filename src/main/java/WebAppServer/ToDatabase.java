@@ -357,10 +357,10 @@ public class ToDatabase {
     }
 
     //get task info in new IndvInvite
-    public static String getNewIndvInvite(int userId){
+    public static String getNewInvite(int userId){
         try {
             Statement st = conn.createStatement();
-            String getNewInvite = "select newindividualinvite from users where userid = " + userId;
+            String getNewInvite = "select newtaskinvite from users where userid = " + userId;
             ResultSet newIndvInviteResult = st.executeQuery(getNewInvite);
             if(newIndvInviteResult.next()){
                 Long[] newIndvTaskIds = (Long[]) newIndvInviteResult.getArray(1).getArray();
@@ -373,13 +373,13 @@ public class ToDatabase {
                 if(newIndvTasks.length() == 0) {
                     return jsonArray.toString();
                 }
-                String getInviteTaskInfo = "select * from individual where taskid in ( " + newIndvTasks + ")";
+                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + newIndvTasks + ")";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
                         {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
                 String[] columnName =
-                        {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
                 while(inviteTaskInfoResult.next()) {
                     JSONObject jObj = new JSONObject();
                     for(int c = 0; c < 7; c++) {
@@ -400,10 +400,10 @@ public class ToDatabase {
     }
 
     //clear newIndvInvite
-    public static int clearNewIndvInvite(int userId){
+    public static int clearNewInvite(int userId){
         try {
             Statement st = conn.createStatement();
-            String updateMyIndv = "UPDATE users SET newindividualinvite = '{}' WHERE userid=" + userId;
+            String updateMyIndv = "UPDATE users SET mytaskinvite = '{}' WHERE userid=" + userId;
             st.executeUpdate(updateMyIndv);
             st.close();
             return SUCCESS;

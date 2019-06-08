@@ -104,15 +104,15 @@ public class ToXamarin {
 
 
 
-    @GetMapping("/clearIndvInvitation")
-    public String xclearIndvInvitation(@RequestParam(value="userId") int userId){
-        return String.valueOf(clearNewIndvInvite(userId));
+    @GetMapping("/clearInvitation")
+    public String xclearInvitation(@RequestParam(value="userId") int userId){
+        return String.valueOf(clearNewInvite(userId));
 
     }
 
-    @GetMapping("/getNewIndvInvite")
-    public String xgetNewIndvInvite(@RequestParam(value="userId") int userId){
-        return String.valueOf(getNewIndvInvite(userId));
+    @GetMapping("/getNewInvite")
+    public String xgetNewInvite(@RequestParam(value="userId") int userId){
+        return String.valueOf(getNewInvite(userId));
     }
 
     @PostMapping(path = "/addIndvProgressUpdate")
