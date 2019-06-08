@@ -589,8 +589,8 @@ public class ToDatabase {
             st.executeUpdate(String.format(removeUpdate, updatenum));
 
             //update task owner progress(increment) in individual TODO:check deadline, repetition etc.
-            String updateMyIndv = "UPDATE grouptask SET progress = progress + 1 WHERE taskid =" + taskid;
-            st.executeUpdate(updateMyIndv);
+            //String updateMyIndv = "UPDATE grouptask SET progress = progress + 1 WHERE taskid =" + taskid;
+            //st.executeUpdate(updateMyIndv);
 
             //add updatenum to indvupdate in user
             ResultSet ownerResult = st.executeQuery("SELECT userid FROM grouptask WHERE taskid =" + taskid);
