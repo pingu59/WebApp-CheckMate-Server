@@ -281,12 +281,6 @@ public class ToDatabase {
         try {
             //connect
             Statement st = conn.createStatement();
-
-            // cannot supervise your self
-            if(Arrays.stream(members).anyMatch(x -> x == myId)) {
-                return SERVER_FAILURE;
-            }
-
             //get taskid
             ResultSet largestId = st.executeQuery("select max(taskid) from individual");
             largestId.next();
@@ -297,7 +291,6 @@ public class ToDatabase {
             } else {
                 taskId =  Integer.parseInt(taskNum) + 1;
             }
-
             //create task update individual table
             String supvStr = Arrays.toString(members);
             int last = supvStr.length() - 1;
@@ -305,7 +298,6 @@ public class ToDatabase {
             int rowAffected = st.executeUpdate("INSERT INTO group VALUES (" + taskId + ", " + myId + ", '{" + taskName +
                     "}', '{" + repetition + "}' , " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
             System.out.println("insert  " + rowAffected +" rows into individual");
-
             //update user table for the owner
             String updateMyTask = "UPDATE users SET mytask = array_append(mytask, '%d') WHERE userid in ( " + members + ")";
             st.execute(String.format(updateMyTask, taskId, myId));
@@ -478,9 +470,9 @@ public class ToDatabase {
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
-                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
+                        {"taskid", "creatorid", "taskname", "repetition", "frequency",  "deadline", "member"};
                 String[] columnName =
-                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
+                        {"taskid", "creatorid", "taskname", "repetition", "frequency",  "deadline", "member"};
                 while(inviteTaskInfoResult.next()) {
                     JSONObject jObj = new JSONObject();
                     for(int c = 0; c < 7; c++) {
