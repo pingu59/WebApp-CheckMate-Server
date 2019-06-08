@@ -500,7 +500,7 @@ public class ToDatabase {
             Statement st = conn.createStatement();
             int updateNum;
             //select supervisors for this task
-            String getSupervisors = "select members from grouptask where taskid = " + taskid;
+            String getSupervisors = "select member from grouptask where taskid = " + taskid;
             ResultSet supvResult = st.executeQuery(getSupervisors);
             if(supvResult.next()) {
                 Long[] supervisors = (Long[]) supvResult.getArray(1).getArray();
