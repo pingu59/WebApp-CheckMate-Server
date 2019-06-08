@@ -403,7 +403,7 @@ public class ToDatabase {
     public static int clearNewInvite(int userId){
         try {
             Statement st = conn.createStatement();
-            String updateMyIndv = "UPDATE users SET mytaskinvite = '{}' WHERE userid=" + userId;
+            String updateMyIndv = "UPDATE users SET newtaskinvite = '{}' WHERE userid=" + userId;
             st.executeUpdate(updateMyIndv);
             st.close();
             return SUCCESS;
