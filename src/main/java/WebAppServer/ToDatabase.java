@@ -282,7 +282,7 @@ public class ToDatabase {
             //connect
             Statement st = conn.createStatement();
             //get taskid
-            ResultSet largestId = st.executeQuery("select max(taskid) from individual");
+            ResultSet largestId = st.executeQuery("select max(taskid) from grouptask");
             largestId.next();
             String taskNum = largestId.getString(1);
             int taskId;
@@ -295,11 +295,14 @@ public class ToDatabase {
             String supvStr = Arrays.toString(members);
             int last = supvStr.length() - 1;
             supvStr = supvStr.substring(1, last);
-            int rowAffected = st.executeUpdate("INSERT INTO group VALUES (" + taskId + ", " + myId + ", '{" + taskName +
+            int rowAffected = st.executeUpdate("INSERT INTO grouptask VALUES (" + taskId + ", " + myId + ", '{" + taskName +
                     "}', '{" + repetition + "}' , " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
-            System.out.println("insert  " + rowAffected +" rows into individual");
+            System.out.println("insert  " + rowAffected +" rows into grouptask");
             //update user table for the owner
-            String updateMyTask = "UPDATE users SET mytask = array_append(mytask, '%d') WHERE userid in ( " + members + ")";
+            String memberString = Arrays.toString(members);
+            int l = memberString.length() - 1;
+            memberString = memberString.substring(1, l);
+            String updateMyTask = "UPDATE users SET mytask = array_append(mytask, '%d') WHERE userid in ( " + memberString + ")";
             st.execute(String.format(updateMyTask, taskId, myId));
             String updateNewSupv = "UPDATE users SET newtaskinvite = array_append(newtaskinvite, '%d') WHERE userid=%d;";
             for (int id : members) {
@@ -466,7 +469,7 @@ public class ToDatabase {
                 if(tasks.length() == 0) {
                     return jsonArray.toString();
                 }
-                String getInviteTaskInfo = "select * from group where taskid in ( " + tasks + ")";
+                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + tasks + ")";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
