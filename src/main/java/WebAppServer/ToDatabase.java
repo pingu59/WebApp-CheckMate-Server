@@ -377,7 +377,7 @@ public class ToDatabase {
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
-                        {"taskID", "ownerID", "taskName", "repetition","frequency",  "deadline", "related"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
                 String[] columnName =
                         {"taskid", "userid", "taskname", "repetition","frequency",  "deadline", "supervisors"};
                 while(inviteTaskInfoResult.next()) {
