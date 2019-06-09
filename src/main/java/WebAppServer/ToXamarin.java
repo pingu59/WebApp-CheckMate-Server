@@ -143,4 +143,8 @@ public class ToXamarin {
         return String.valueOf(getIndvHistory(userId));
     }
 
+    @GetMapping("/checkDeadline")
+    public String xcheckDeadline(@RequestParam(value="userId") int userId){
+        return String.valueOf(checkDeadline(userId));
+    }
 }

@@ -12,9 +12,13 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
 
 public class ToDatabase {
     private static Connection conn = connect();
@@ -23,6 +27,17 @@ public class ToDatabase {
     private static final int FAILURE = 0;
     private static final int USER_NOT_EXSIST = 2;
     private static final int INCORRECT_PWD = 3;
+    private static final String NO_DEADLINE = "ALL GOOD";
+    private static final int STARTDATE_COLUMN = 8;
+    private static final int DEADLINE_COLUMN = 7;
+    private static final int REPETITION_COLUMN = 4;
+    private static final int TRACK_PROGRESS_COLUMN = 4;
+    private static final int TRACK_FREQUENCY_COLUMN = 5;
+
+    private static final int MEET_FINAL_DEADLINE = 100;
+    private static final int MEET_RECENT_DEADLINE = 101;
+    private static final int NO_RECENT_DEADLINE = 101;
+
 
     private static Connection connect(){
         final String url = "jdbc:postgresql://db.doc.ic.ac.uk:5432/g1827127_u";
@@ -648,11 +663,12 @@ public class ToDatabase {
     }
 
     //task history: checkerName/updateNumber/taskName
+    //TODO NEED TO CHANGE SQL, NO INDIVIDUAL COLUMN ANYMORE!!!!!!
     public static String getIndvHistory(int userid) {
         try {
             Statement st = conn.createStatement();
             //get individual tasks for this user
-            String getIndvTaskId = "select myindividual from users where userid = " + userid;
+            String getIndvTaskId = "select mytask from users where userid = " + userid;
             ResultSet taskIdResult = st.executeQuery(getIndvTaskId);
             taskIdResult.next();
             Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
@@ -660,13 +676,13 @@ public class ToDatabase {
 
             for (Long taskId : taskIds) {
                 //get taskName from individual for each individual task
-                String getIndvTaskName = "select taskname from individual where taskid = " + taskId;
+                String getIndvTaskName = "select taskname from grouptask where taskid = " + taskId;
                 ResultSet taskNameResult = st.executeQuery(getIndvTaskName);
                 if(taskNameResult.next()) {
                     String taskName = taskNameResult.getString(1);
 
                     //get checkerid for each taskupdate
-                    String getCheckerId = "select * from indvprogressupdate where taskid = " + taskId;
+                    String getCheckerId = "select * from progressupdate where taskid = " + taskId;
                     ResultSet checkerIdResult = st.executeQuery(getCheckerId);
                     while(checkerIdResult.next()) {
                         //get checkerName from users
@@ -693,6 +709,82 @@ public class ToDatabase {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // check any deadline has passed
+    public static String checkDeadline(int userid) {
+        try {
+            Statement st = conn.createStatement();
+            //get all tasks of the user
+            String getTasksCommand = "SELECT mytask FROM users WHERE userid = " + userid;
+            ResultSet taskIdResult = st.executeQuery(getTasksCommand);
+            taskIdResult.next();
+            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
+            JSONArray unfinishedTasks = new JSONArray();
+
+            for (Long taskId : taskIds) {
+                //get taskName from individual for each individual task
+                String getTaskInfoCommand  = "SELECT * FROM grouptask WHERE taskid = " + taskId;
+                ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
+                if(taskInfo.next()) {
+
+
+                    LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
+                    LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
+                    String repetition = taskInfo.getString(REPETITION_COLUMN);
+                    int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
+                    if(deadlineStatus == NO_RECENT_DEADLINE){
+                        return NO_DEADLINE;
+                    }
+                    else{   //check progress and frequency
+                        String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
+                                                    + userid + " AND taskid = " + taskId;
+                        ResultSet progressInfo = st.executeQuery(getProgressCommand);
+                        if(progressInfo.next()){
+                            int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
+                            int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
+                            if(progress < frequency){
+                                JSONObject task = new JSONObject();
+                                task.put("taskid", taskId);
+                                unfinishedTasks.put(task);
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            st.close();
+            return unfinishedTasks.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //helper method of checkDeadline
+    private static int meetRecentDeadline(LocalDate startdate, LocalDate deadlineDate, String repetition){
+
+        LocalDate today = LocalDate.now();
+
+        if(deadlineDate.isEqual(today)){
+            return MEET_FINAL_DEADLINE;
+        }
+        switch (repetition){
+            case "Daily":
+                if(today.isEqual(startdate.plusDays(1))){
+                    return MEET_RECENT_DEADLINE;
+                }
+            case "Weekly":
+                if(today.isEqual(startdate.plusDays(7))){
+                    return MEET_RECENT_DEADLINE;
+                }
+            case "Monthly":
+                if(today.isEqual(startdate.plusMonths(1))){
+                    return MEET_RECENT_DEADLINE;
+                }
+        }
+        return NO_RECENT_DEADLINE;
     }
 
 }
