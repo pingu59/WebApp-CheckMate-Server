@@ -335,7 +335,7 @@ public class ToDatabase {
             for(int memberid : members){
                 String insertProgressCommand = String.format("INSERT INTO progresstrack VALUES(%d, %d, 0, %d)", taskId, memberid, frequency);
                 System.out.println(insertProgressCommand);
-                st.executeQuery(insertProgressCommand);
+                st.executeUpdate(insertProgressCommand);
             }
 
             st.close();
