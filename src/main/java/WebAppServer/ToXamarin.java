@@ -147,4 +147,9 @@ public class ToXamarin {
     public String xcheckDeadline(@RequestParam(value="userId") int userId){
         return String.valueOf(checkDeadline(userId));
     }
+
+    @GetMapping("getMembersProgress")
+    public String xgetMembersProgress(@RequestParam(value="taskId") int taskId){
+        return String.valueOf(getMembersProgress(taskId));
+    }
 }

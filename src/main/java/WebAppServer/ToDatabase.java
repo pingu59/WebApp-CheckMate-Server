@@ -13,12 +13,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Date;
 
 public class ToDatabase {
     private static Connection conn = connect();
@@ -28,15 +26,19 @@ public class ToDatabase {
     private static final int USER_NOT_EXSIST = 2;
     private static final int INCORRECT_PWD = 3;
     private static final String NO_DEADLINE = "ALL GOOD";
+
+
     private static final int STARTDATE_COLUMN = 8;
     private static final int DEADLINE_COLUMN = 7;
     private static final int REPETITION_COLUMN = 4;
-    private static final int TRACK_PROGRESS_COLUMN = 4;
-    private static final int TRACK_FREQUENCY_COLUMN = 5;
+    private static final int TRACK_PROGRESS_COLUMN = 3;
+    private static final int TRACK_FREQUENCY_COLUMN = 4;
+    private static final int GROUPTASK_MEMBERS_COLUMN = 6;
 
     private static final int MEET_FINAL_DEADLINE = 100;
     private static final int MEET_RECENT_DEADLINE = 101;
     private static final int NO_RECENT_DEADLINE = 101;
+
 
 
     private static Connection connect(){
@@ -723,7 +725,7 @@ public class ToDatabase {
             JSONArray unfinishedTasks = new JSONArray();
 
             for (Long taskId : taskIds) {
-                //get taskName from individual for each individual task
+                //get task info from group task table
                 String getTaskInfoCommand  = "SELECT * FROM grouptask WHERE taskid = " + taskId;
                 ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
                 if(taskInfo.next()) {
@@ -785,6 +787,38 @@ public class ToDatabase {
                 }
         }
         return NO_RECENT_DEADLINE;
+    }
+
+    public static String getMembersProgress(int taskid) {
+        try {
+            Statement st = conn.createStatement();
+            //get all members of the task
+            String getMembersCommand = "SELECT * FROM grouptask WHERE taskid = " + taskid;
+            ResultSet membersResult = st.executeQuery(getMembersCommand);
+            membersResult.next();
+            Long[] memberIds = (Long[]) membersResult.getArray(GROUPTASK_MEMBERS_COLUMN).getArray();
+            JSONArray progressArray = new JSONArray();
+
+            for (Long memberId : memberIds) {
+
+                //get progress of each memeber in progress track table
+                String getProgressCommand  = "SELECT * FROM progresstrack WHERE taskid = " + taskid
+                                                + " AND memberid = " + memberId;
+                ResultSet progressInfo = st.executeQuery(getProgressCommand);
+                if(progressInfo.next()) {
+
+                    int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
+                    JSONObject memberProgress = new JSONObject();
+                    memberProgress.put("userid", memberId);
+                    memberProgress.put("progress", progress);
+                    progressArray.put(memberProgress);
+                }
+            }
+            st.close();
+            return progressArray.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
