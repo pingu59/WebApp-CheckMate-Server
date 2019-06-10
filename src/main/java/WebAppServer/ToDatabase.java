@@ -294,7 +294,8 @@ public class ToDatabase {
 
 
     //create task
-    public static int createTask(int myId, String taskName, String repetition, int frequency, int[] members, String date){
+    public static int createTask(int myId, String taskName, String repetition, int frequency, int[] members,
+                                 String date, String bet){
         try {
             //connect
             Statement st = conn.createStatement();
@@ -312,8 +313,10 @@ public class ToDatabase {
             String supvStr = Arrays.toString(members);
             int last = supvStr.length() - 1;
             supvStr = supvStr.substring(1, last);
-            int rowAffected = st.executeUpdate("INSERT INTO grouptask VALUES (" + taskId + ", " + myId + ", '{" + taskName +
-                    "}', '{" + repetition + "}' , " + frequency + ", '{ " + supvStr + "}' , '" + date + "' )");
+            String insertTaskCommand = "INSERT INTO grouptask (taskid, creatorid, taskname, repetition, frequency, member, deadline, bet) "+
+                                        "VALUES(%d, %d, %s, %s, %d, &s, %d, %s)";
+            String sqlCommand = String.format(insertTaskCommand, taskId, myId, taskName, repetition, frequency, supvStr, date, bet);
+            int rowAffected = st.executeUpdate(sqlCommand);
             System.out.println("insert  " + rowAffected +" rows into grouptask");
             //update user table for the owner
             String memberString = Arrays.toString(members);
@@ -328,6 +331,13 @@ public class ToDatabase {
                     st.execute(String.format(updateNewSupv, taskId, id));
                 }
             }
+            //TODO initialize progress track for each member
+            for(int memberid : members){
+                String insertProgressCommand = String.format("INSERT INTO progresstrack VALUES(%d, %d, 0, %d)",
+                                                            taskId, memberid, frequency);
+                st.executeQuery(insertProgressCommand);
+            }
+
             st.close();
             return taskId;
         }catch (SQLException e){
@@ -498,6 +508,7 @@ public class ToDatabase {
                     for(int c = 0; c < 7; c++) {
                         jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
                     }
+                    jObj.put("bet", inviteTaskInfoResult.getString(9));
                     jsonArray.put(jObj);
                 }
                 st.close();
@@ -592,7 +603,7 @@ public class ToDatabase {
         }
     }
 
-    //when a supervisor check a task
+    //when a supervisor check a task, myid is supervisor id
     public static int supvCheck(int myId, int taskid, int updatenum){
         try {
             Statement st = conn.createStatement();
@@ -616,6 +627,12 @@ public class ToDatabase {
             int ownerid = Integer.parseInt(ownerResult.getString("userid"));
             String addIndvUpdate = "UPDATE users SET mytaskupdate = array_append(mytaskupdate, '%d') WHERE userid=%d;";
             st.execute(String.format(addIndvUpdate, updatenum , ownerid));
+
+            //TODO update progress
+            String progressTrackCommand = String.format("UPDATE progresstrack SET progress = progress+1 WHERE taskid = %d AND memberid = %d",
+                    taskid, ownerid);
+            st.executeUpdate(progressTrackCommand);
+
             st.close();
             return SUCCESS;
         } catch (SQLException e) {

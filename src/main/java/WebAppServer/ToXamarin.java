@@ -79,8 +79,9 @@ public class ToXamarin {
                                        @RequestParam(value="repetition") String repetition,
                                        @RequestParam(value="frequency") int frequency,
                                        @RequestParam(value="members") int[] members,
-                                       @RequestParam(value="deadline") String date){
-        return String.valueOf(createTask(myId, taskName, repetition, frequency, members, date));
+                                       @RequestParam(value="deadline") String date,
+                                       @RequestParam(value="bet") String bet){
+        return String.valueOf(createTask(myId, taskName, repetition, frequency, members, date, bet));
     }
 
 
@@ -148,7 +149,7 @@ public class ToXamarin {
         return String.valueOf(checkDeadline(userId));
     }
 
-    @GetMapping("getMembersProgress")
+    @GetMapping("getProgress")
     public String xgetMembersProgress(@RequestParam(value="taskId") int taskId){
         return String.valueOf(getMembersProgress(taskId));
     }
