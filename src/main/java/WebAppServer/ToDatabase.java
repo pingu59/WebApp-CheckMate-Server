@@ -539,7 +539,7 @@ public class ToDatabase {
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
                 String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1,'{%s}', %d)";
-                String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'", myId);
+                String sndBaseString = String.format(updateProgress, updateNum, taskid, image, myId);
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();
                 ps.close();
