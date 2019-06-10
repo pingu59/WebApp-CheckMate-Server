@@ -333,8 +333,8 @@ public class ToDatabase {
             }
             //TODO initialize progress track for each member
             for(int memberid : members){
-                String insertProgressCommand = String.format("INSERT INTO progresstrack VALUES(%d, %d, 0, %d)",
-                                                            taskId, memberid, frequency);
+                String insertProgressCommand = String.format("INSERT INTO progresstrack VALUES(%d, %d, 0, %d)", taskId, memberid, frequency);
+                System.out.println(insertProgressCommand);
                 st.executeQuery(insertProgressCommand);
             }
 
