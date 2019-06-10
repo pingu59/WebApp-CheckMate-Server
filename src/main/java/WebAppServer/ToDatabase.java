@@ -4,6 +4,7 @@ package WebAppServer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -736,81 +737,7 @@ public class ToDatabase {
         }
     }
 
-    // check any deadline has passed
-    public static String checkDeadline(int userid) {
-        try {
-            Statement st = conn.createStatement();
-            //get all tasks of the user
-            String getTasksCommand = "SELECT mytask FROM users WHERE userid = " + userid;
-            ResultSet taskIdResult = st.executeQuery(getTasksCommand);
-            taskIdResult.next();
-            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
-            JSONArray unfinishedTasks = new JSONArray();
 
-            for (Long taskId : taskIds) {
-                //get task info from group task table
-                String getTaskInfoCommand  = "SELECT * FROM grouptask WHERE taskid = " + taskId;
-                ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
-                if(taskInfo.next()) {
-
-
-                    LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
-                    LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
-                    String repetition = taskInfo.getString(REPETITION_COLUMN);
-                    int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
-                    if(deadlineStatus == NO_RECENT_DEADLINE){
-                        return NO_DEADLINE;
-                    }
-                    else{   //check progress and frequency
-                        String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
-                                                    + userid + " AND taskid = " + taskId;
-                        ResultSet progressInfo = st.executeQuery(getProgressCommand);
-                        if(progressInfo.next()){
-                            int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
-                            int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
-                            if(progress < frequency){
-                                JSONObject task = new JSONObject();
-                                task.put("taskid", taskId);
-                                unfinishedTasks.put(task);
-                            }
-                            else{
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            st.close();
-            return unfinishedTasks.toString();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    //helper method of checkDeadline
-    private static int meetRecentDeadline(LocalDate startdate, LocalDate deadlineDate, String repetition){
-
-        LocalDate today = LocalDate.now();
-
-        if(deadlineDate.isEqual(today)){
-            return MEET_FINAL_DEADLINE;
-        }
-        switch (repetition){
-            case "Daily":
-                if(today.isEqual(startdate.plusDays(1))){
-                    return MEET_RECENT_DEADLINE;
-                }
-            case "Weekly":
-                if(today.isEqual(startdate.plusDays(7))){
-                    return MEET_RECENT_DEADLINE;
-                }
-            case "Monthly":
-                if(today.isEqual(startdate.plusMonths(1))){
-                    return MEET_RECENT_DEADLINE;
-                }
-        }
-        return NO_RECENT_DEADLINE;
-    }
 
     public static String getMembersProgress(int taskid) {
         try {
@@ -844,4 +771,109 @@ public class ToDatabase {
         }
     }
 
+    //TODO zhenzhen also doesn't know what she is writing about???????????
+    public static void checkAllUsersDeadline() {
+        try{
+            Statement st = conn.createStatement();
+            String getAllUsersCommand = "SELECT userid FROM users";
+            ResultSet allUsers = st.executeQuery(getAllUsersCommand);
+            while(allUsers.next()){
+                int id = allUsers.getInt("userid");
+                checkDeadline(id,st);
+            }
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    // check any deadline has passed
+    public static void checkDeadline(int userid, Statement st) {
+        try {
+            //get all tasks of the user
+            String getTasksCommand = "SELECT mytask FROM users WHERE userid = " + userid;
+            ResultSet taskIdResult = st.executeQuery(getTasksCommand);
+            taskIdResult.next();
+            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
+            JSONArray unfinishedTasks = new JSONArray();
+
+            for (Long taskId : taskIds) {
+                //get task info from group task table
+                String getTaskInfoCommand  = "SELECT * FROM grouptask WHERE taskid = " + taskId;
+                ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
+                if(taskInfo.next()) {
+                    LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
+                    LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
+                    String repetition = taskInfo.getString(REPETITION_COLUMN);
+                    int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
+                    if(deadlineStatus == NO_RECENT_DEADLINE){
+                        return;
+                    }
+                    else{   //check progress and frequency
+                        String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
+                                + userid + " AND taskid = " + taskId;
+                        ResultSet progressInfo = st.executeQuery(getProgressCommand);
+                        if(progressInfo.next()){
+                            int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
+                            int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
+                            if(progress < frequency){
+                                String recordPenaltyCommand = String.format("INSERT INTO penalty(userid, taskid) VALUES(%d, %d)", userid, taskId);
+                                st.executeUpdate(recordPenaltyCommand);
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //helper method of checkDeadline
+    private static int meetRecentDeadline(LocalDate startdate, LocalDate deadlineDate, String repetition){
+
+        LocalDate today = LocalDate.now();
+
+        if(deadlineDate.isEqual(today)){
+            return MEET_FINAL_DEADLINE;
+        }
+        switch (repetition){
+            case "Daily":
+                if(today.isEqual(startdate.plusDays(1))){
+                    return MEET_RECENT_DEADLINE;
+                }
+            case "Weekly":
+                if(today.isEqual(startdate.plusDays(7))){
+                    return MEET_RECENT_DEADLINE;
+                }
+            case "Monthly":
+                if(today.isEqual(startdate.plusMonths(1))){
+                    return MEET_RECENT_DEADLINE;
+                }
+        }
+        return NO_RECENT_DEADLINE;
+    }
+
+    public static String getPenalty(int userid) {
+        try {
+            JSONArray penaltyArray = new JSONArray();
+            Statement st = conn.createStatement();
+            String getPenaltyCommand = "SELECT * FROM penalty WHERE userid = "+ userid;
+            ResultSet penalty = st.executeQuery(getPenaltyCommand);
+            while (penalty.next()){
+                int taskid = penalty.getInt("taskid");
+                String date = penalty.getString("date");
+                JSONObject penaltyObj = new JSONObject();
+                penaltyObj.put("taskid", taskid);
+                penaltyObj.put("date", date);
+                penaltyArray.put(penaltyObj);
+            }
+            return penaltyArray.toString();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 }

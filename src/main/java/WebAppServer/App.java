@@ -16,13 +16,13 @@ public class App {
         SpringApplication.run(App.class, args);
 
 
-//        while(true){
-//            LocalTime now = LocalTime.now();
-//            LocalTime noon = LocalTime.of(12,0,0,0);
-//            if(now.equals(noon)){
-//                ToDatabase.checkDeadline(0);
-//            }
-//        }
+        while(true){
+            LocalTime now = LocalTime.now();
+            LocalTime noon = LocalTime.of(12,0,0,0);
+            if(now.equals(noon)){
+                ToDatabase.checkAllUsersDeadline();
+            }
+        }
 
 
     }
