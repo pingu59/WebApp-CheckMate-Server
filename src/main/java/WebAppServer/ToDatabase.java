@@ -614,8 +614,14 @@ public class ToDatabase {
 
             //remove updatenum from indvsupvupdate in user for supv
             //TODO remove all otherstaskupdate of all group member
-            String removeUpdate = "UPDATE users SET otherstaskupdate = array_remove(otherstaskupdate, '%d') WHERE  userid = " + myId ;
-            st.executeUpdate(String.format(removeUpdate, updatenum));
+            String getMembersCommand = "SELECT * FROM grouptask WHERE taskid = " + taskid;
+            ResultSet taskInfo = st.executeQuery(getMembersCommand);
+            taskInfo.next();
+            Long[] members = (Long[])taskInfo.getArray("member").getArray();
+            for(Long memberid : members){
+                String removeUpdate = "UPDATE users SET otherstaskupdate = array_remove(otherstaskupdate, '%d') WHERE  userid = " + memberid ;
+                st.executeUpdate(String.format(removeUpdate, updatenum));
+            }
 
             //update task owner progress(increment) in individual TODO:check deadline, repetition etc.
             //String updateMyIndv = "UPDATE grouptask SET progress = progress + 1 WHERE taskid =" + taskid;
