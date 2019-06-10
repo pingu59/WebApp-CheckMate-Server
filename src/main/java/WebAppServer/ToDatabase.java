@@ -314,7 +314,7 @@ public class ToDatabase {
             int last = supvStr.length() - 1;
             supvStr = supvStr.substring(1, last);
             String insertTaskCommand = "INSERT INTO grouptask (taskid, creatorid, taskname, repetition, frequency, member, deadline, bet) "+
-                                        "VALUES(%d, %d, %s, %s, %d, &s, %d, %s)";
+                                        "VALUES(%d, %d, '{%s}','{%s}', %d,'{%s}','{%s}','{%s}')";
             String sqlCommand = String.format(insertTaskCommand, taskId, myId, taskName, repetition, frequency, supvStr, date, bet);
             int rowAffected = st.executeUpdate(sqlCommand);
             System.out.println("insert  " + rowAffected +" rows into grouptask");
@@ -538,7 +538,7 @@ public class ToDatabase {
                 maxUpdateNum.next();
                 String updateNumStr = maxUpdateNum.getString(1);
                 updateNum = (updateNumStr == null) ? 1 : Integer.parseInt(updateNumStr) + 1;
-                String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1, %s, %d)";
+                String updateProgress = "INSERT INTO progressupdate VALUES(%d, %d, -1,'{%s}', %d)";
                 String sndBaseString = String.format(updateProgress, updateNum, taskid, "'{"+image+"}'", myId);
                 PreparedStatement ps = conn.prepareStatement(sndBaseString);
                 ps.executeUpdate();

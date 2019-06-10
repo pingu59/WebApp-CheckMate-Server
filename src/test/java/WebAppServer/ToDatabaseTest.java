@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 public class ToDatabaseTest {
 
   @Test
@@ -21,7 +23,6 @@ public class ToDatabaseTest {
   @Test
   public void login() {
   }
-
 
 //  @Test
 //  public void friendRequest() {
