@@ -906,15 +906,19 @@ public class ToDatabase {
 
             String getPenaltyMember = String.format("SELECT * FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
             ResultSet penaltyInfo = st.executeQuery(getPenaltyMember);
-            penaltyInfo.next();
-            Long[] members = (Long [])penaltyInfo.getArray("members").getArray();
-            if(members.length == 0){
-                String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
-                st.executeUpdate(deletePenaltyCommand);
+            if(penaltyInfo.next()){
+                Long[] members = (Long [])penaltyInfo.getArray("members").getArray();
+                if(members.length == 0){
+                    String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
+                    st.executeUpdate(deletePenaltyCommand);
+                }
             }
-            return 1;
+
+            st.close();
+
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
+        return 1;
     }
 }

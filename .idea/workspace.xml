@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="19be6ed1-5b12-4eb4-a1fc-3aeff5fe3fef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -45,11 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="914" column="20" selection-start-line="914" selection-start-column="20" selection-end-line="914" selection-end-column="20" />
+            <state relative-caret-position="-11">
+              <caret line="898" column="22" selection-start-line="898" selection-start-column="22" selection-end-line="898" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -60,7 +59,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="317">
+            <state relative-caret-position="303">
               <caret line="167" column="5" lean-forward="true" selection-start-line="167" selection-start-column="5" selection-end-line="167" selection-end-column="5" />
               <folding>
                 <element signature="e#2541#2542#0" expanded="true" />
@@ -72,11 +71,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
+            <state relative-caret-position="317">
+              <caret line="28" column="49" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
+              <folding>
+                <element signature="e#334#335#0" expanded="true" />
+                <element signature="e#390#391#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,16 +158,16 @@
       <list>
         <option value="$PROJECT_DIR$/src/test/java/WebAppServer/AppTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/WebAppServer/App.java" />
-        <option value="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" />
         <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" />
+        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" />
+        <option value="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="20" />
     <option name="y" value="23" />
-    <option name="width" value="1363" />
+    <option name="width" value="1401" />
     <option name="height" value="813" />
   </component>
   <component name="ProjectView">
@@ -267,7 +270,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.ToDatabaseTest.testsomething">
+  <component name="RunManager" selected="JUnit.ToDatabaseTest.testremovepenalty">
     <configuration name="ToDatabaseTest.bbbb" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WebAppServer.test" />
       <extension name="coverage">
@@ -316,6 +319,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ToDatabaseTest.testremovepenalty" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WebAppServer.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="WebAppServer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="WebAppServer" />
+      <option name="MAIN_CLASS_NAME" value="WebAppServer.ToDatabaseTest" />
+      <option name="METHOD_NAME" value="testremovepenalty" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ToDatabaseTest.testsomething" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WebAppServer.test" />
       <extension name="coverage">
@@ -341,6 +360,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ToDatabaseTest.testremovepenalty" />
         <item itemvalue="JUnit.ToDatabaseTest.testsomething" />
         <item itemvalue="JUnit.ToDatabaseTest.checkDeadlineTest" />
         <item itemvalue="JUnit.ToDatabaseTest.bbbb" />
@@ -359,29 +379,11 @@
       <option name="presentableId" value="Default" />
       <updated>1560001701107</updated>
       <workItem from="1560001704204" duration="1038000" />
-      <workItem from="1560090815506" duration="27255000" />
+      <workItem from="1560090815506" duration="28467000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ToDatabaseTest_bbbb - 2019.06.10 at 18h 19m 49s.xml">
-      <configuration name="ToDatabaseTest.bbbb" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_bbbb - 2019.06.10 at 18h 22m 55s.xml">
-      <configuration name="ToDatabaseTest.bbbb" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_bbbb - 2019.06.10 at 20h 44m 54s.xml">
-      <configuration name="ToDatabaseTest.bbbb" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_checkDeadlineTest - 2019.06.11 at 14h 34m 41s.xml">
-      <configuration name="ToDatabaseTest.checkDeadlineTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_checkDeadlineTest - 2019.06.11 at 14h 43m 00s.xml">
-      <configuration name="ToDatabaseTest.checkDeadlineTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_checkDeadlineTest - 2019.06.11 at 14h 56m 54s.xml">
-      <configuration name="ToDatabaseTest.checkDeadlineTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="ToDatabaseTest_checkDeadlineTest - 2019.06.11 at 15h 04m 26s.xml">
       <configuration name="ToDatabaseTest.checkDeadlineTest" configurationId="JUnit" />
     </history-entry>
@@ -394,15 +396,33 @@
     <history-entry file="ToDatabaseTest_testsomething - 2019.06.11 at 15h 58m 17s.xml">
       <configuration name="ToDatabaseTest.testsomething" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 22m 17s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 22m 49s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 24m 30s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 25m 12s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 25m 55s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_testremovepenalty - 2019.06.11 at 16h 26m 26s.xml">
+      <configuration name="ToDatabaseTest.testremovepenalty" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28293000" />
+    <option name="totallyTimeSpent" value="29505000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="20" y="23" width="1363" height="813" extended-state="0" />
+    <frame x="20" y="23" width="1401" height="813" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15897048" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15452538" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -436,11 +456,23 @@
       <window_info anchor="right" id="Database" order="7" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Theme Preview" order="9" />
-      <window_info anchor="right" id="Bean Validation" order="10" visible="true" weight="0.022710068" />
+      <window_info anchor="right" id="Bean Validation" order="10" visible="true" weight="0.022075055" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java</url>
+          <line>904</line>
+          <properties />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/JSONConvert.java">
@@ -542,6 +574,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/App.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -552,23 +591,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
+        <state relative-caret-position="303">
           <caret line="167" column="5" lean-forward="true" selection-start-line="167" selection-start-column="5" selection-end-line="167" selection-end-column="5" />
           <folding>
             <element signature="e#2541#2542#0" expanded="true" />
@@ -581,10 +606,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="914" column="20" selection-start-line="914" selection-start-column="20" selection-end-line="914" selection-end-column="20" />
+        <state relative-caret-position="-11">
+          <caret line="898" column="22" selection-start-line="898" selection-start-column="22" selection-end-line="898" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="28" column="49" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
+          <folding>
+            <element signature="e#334#335#0" expanded="true" />
+            <element signature="e#390#391#0" expanded="true" />
           </folding>
         </state>
       </provider>

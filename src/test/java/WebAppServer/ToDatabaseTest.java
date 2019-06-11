@@ -23,5 +23,4 @@ public class ToDatabaseTest {
   @Test
   public void login() {
   }
-
 }
