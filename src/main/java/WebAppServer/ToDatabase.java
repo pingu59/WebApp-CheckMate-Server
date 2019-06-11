@@ -896,7 +896,8 @@ public class ToDatabase {
         }
     }
 
-    public static int removePenalty(String date, int taskid, int member, int owner) {
+
+    public static int removePenalty(String date, int taskid, int owner, int member) {
         try {
             JSONArray penaltyArray = new JSONArray();
             Statement st = conn.createStatement();
@@ -915,10 +916,9 @@ public class ToDatabase {
             }
 
             st.close();
-
+            return 1;
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
-        return 1;
     }
 }
