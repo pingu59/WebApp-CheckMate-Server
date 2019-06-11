@@ -23,7 +23,11 @@ public class ToDatabaseTest {
   @Test
   public void login() {
   }
-  
+
+  @Test
+  public void checkDeadlineTest(){
+      ToDatabase.checkAllUsersDeadline();
+  }
 
 //  @Test
 //  public void friendRequest() {

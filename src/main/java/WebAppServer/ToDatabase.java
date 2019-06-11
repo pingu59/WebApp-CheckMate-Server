@@ -775,12 +775,15 @@ public class ToDatabase {
     public static void checkAllUsersDeadline() {
         try{
             Statement st = conn.createStatement();
+            Statement st1 = conn.createStatement();
             String getAllUsersCommand = "SELECT userid FROM users";
             ResultSet allUsers = st.executeQuery(getAllUsersCommand);
             while(allUsers.next()){
                 int id = allUsers.getInt("userid");
-                checkDeadline(id,st);
+                checkDeadline(id,st1);
             }
+            st1.close();
+            st.close();
 
         }catch (SQLException e){
             throw new RuntimeException(e);
@@ -805,6 +808,7 @@ public class ToDatabase {
                     LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
                     LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
                     String repetition = taskInfo.getString(REPETITION_COLUMN);
+                    String members = taskInfo.getString("member");
                     int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
                     if(deadlineStatus == NO_RECENT_DEADLINE){
                         return;
@@ -817,13 +821,26 @@ public class ToDatabase {
                             int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
                             int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
                             if(progress < frequency){
-                                String recordPenaltyCommand = String.format("INSERT INTO penalty(userid, taskid) VALUES(%d, %d)", userid, taskId);
+
+                                String recordPenaltyCommand = String.format("INSERT INTO penalty(userid, taskid, members) VALUES(%d, %d, '%s')", userid, taskId, members);
                                 st.executeUpdate(recordPenaltyCommand);
+                                String removeMyselfCommand = String.format("UPDATE penalty SET members = array_remove(members, '%d') WHERE  userid = %d AND taskid = %d", userid, userid, taskId);
+                                st.executeUpdate(removeMyselfCommand);
+
                             }
                             else{
                                 break;
                             }
                         }
+                        if(deadlineStatus == MEET_RECENT_DEADLINE){
+                            String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE userid = %d AND taskid = %d", userid, taskId);
+                            st.executeUpdate(clearProgressCommand);
+                        }
+                        else{
+                            String setTaskInvalid = String.format("UPDATE grouptask SET valid = false WHERE taskid = %d", taskId);
+                            st.executeUpdate(setTaskInvalid);
+                        }
+
                     }
                 }
             }
@@ -866,9 +883,11 @@ public class ToDatabase {
             while (penalty.next()){
                 int taskid = penalty.getInt("taskid");
                 String date = penalty.getString("date");
+                Long[] members = (Long[]) penalty.getArray("members").getArray();
                 JSONObject penaltyObj = new JSONObject();
                 penaltyObj.put("taskid", taskid);
                 penaltyObj.put("date", date);
+                penaltyObj.put("members", Arrays.asList(members));
                 penaltyArray.put(penaltyObj);
             }
             return penaltyArray.toString();
