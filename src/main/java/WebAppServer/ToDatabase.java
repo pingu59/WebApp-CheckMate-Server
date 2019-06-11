@@ -714,6 +714,7 @@ public class ToDatabase {
                         //get checkerName from users
                         int checkerId = Integer.parseInt(checkerIdResult.getString("checkerid"));
                         int updateNum = Integer.parseInt(checkerIdResult.getString("updatenum"));
+                        String image = checkerIdResult.getString("image");
 
                         Statement st1 = conn.createStatement();
                         String getCheckerName = "select username from users where userid = " + checkerId;
@@ -724,6 +725,7 @@ public class ToDatabase {
                             obj.put("taskName", taskName);
                             obj.put("updateNumber", updateNum);
                             obj.put("checkerName", checkerName);
+                            obj.put("image", image);
                             history.put(obj);
                         }
                         st1.close();
