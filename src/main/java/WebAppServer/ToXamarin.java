@@ -144,10 +144,10 @@ public class ToXamarin {
         return String.valueOf(getIndvHistory(userId));
     }
 
-//    @GetMapping("/checkDeadline")
-//    public String xcheckDeadline(@RequestParam(value="userId") int userId){
-//        return String.valueOf(checkDeadline(userId));
-//    }
+    @GetMapping("/checkDeadline")
+    public String xcheckDeadline(@RequestParam(value="userId") int userId){
+        return String.valueOf(checkDeadline(userId));
+    }
 
     @GetMapping("getProgress")
     public String xgetMembersProgress(@RequestParam(value="taskId") int taskId){

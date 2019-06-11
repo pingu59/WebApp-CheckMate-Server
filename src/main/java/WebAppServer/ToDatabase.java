@@ -777,14 +777,12 @@ public class ToDatabase {
     public static void checkAllUsersDeadline() {
         try{
             Statement st = conn.createStatement();
-            Statement st1 = conn.createStatement();
             String getAllUsersCommand = "SELECT userid FROM users";
             ResultSet allUsers = st.executeQuery(getAllUsersCommand);
             while(allUsers.next()){
                 int id = allUsers.getInt("userid");
-                checkDeadline(id,st1);
+                checkDeadline(id);
             }
-            st1.close();
             st.close();
 
         }catch (SQLException e){
@@ -793,8 +791,9 @@ public class ToDatabase {
     }
 
     // check any deadline has passed
-    public static void checkDeadline(int userid, Statement st) {
+    public static int checkDeadline(int userid) {
         try {
+            Statement st = conn.createStatement();
             //get all tasks of the user
             String getTasksCommand = "SELECT mytask FROM users WHERE userid = " + userid;
             ResultSet taskIdResult = st.executeQuery(getTasksCommand);
@@ -813,7 +812,7 @@ public class ToDatabase {
                     String members = taskInfo.getString("member");
                     int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
                     if(deadlineStatus == NO_RECENT_DEADLINE){
-                        return;
+                        return SUCCESS;
                     }
                     else{   //check progress and frequency
                         String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
@@ -846,6 +845,8 @@ public class ToDatabase {
                     }
                 }
             }
+            st.close();
+            return SUCCESS;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
