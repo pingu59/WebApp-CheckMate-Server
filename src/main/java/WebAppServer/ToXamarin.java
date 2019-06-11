@@ -164,6 +164,6 @@ public class ToXamarin {
                                 @RequestParam(value="taskid") int taskid,
                                 @RequestParam(value="member") int member,
                                  @RequestParam(value="owner") int owner) {
-        return removePenalty(date, taskid, member, owner);
+        return String.valueOf(removePenalty(date, taskid, member, owner));
     }
 }

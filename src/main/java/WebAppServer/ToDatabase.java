@@ -896,7 +896,7 @@ public class ToDatabase {
         }
     }
 
-    public static String removePenalty(String date, int taskid, int member, int owner) {
+    public static int removePenalty(String date, int taskid, int member, int owner) {
         try {
             JSONArray penaltyArray = new JSONArray();
             Statement st = conn.createStatement();
@@ -912,7 +912,7 @@ public class ToDatabase {
                 String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
                 st.executeUpdate(deletePenaltyCommand);
             }
-            return penaltyArray.toString();
+            return 1;
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
