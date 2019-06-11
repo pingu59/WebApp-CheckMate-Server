@@ -895,4 +895,26 @@ public class ToDatabase {
             throw new RuntimeException(e);
         }
     }
+
+    public static String removePenalty(String date, int taskid, int member, int owner) {
+        try {
+            JSONArray penaltyArray = new JSONArray();
+            Statement st = conn.createStatement();
+            String updatePenaltyCommand = String.format(("UPDATE penalty SET members = array_remove(members, '%d') " +
+                                                        "WHERE userid = %d AND taskid = %d AND date = '{%s}' "),owner,member,taskid, date);
+            st.executeUpdate(updatePenaltyCommand);
+
+            String getPenaltyMember = String.format("SELECT * FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
+            ResultSet penaltyInfo = st.executeQuery(getPenaltyMember);
+            penaltyInfo.next();
+            Long[] members = (Long [])penaltyInfo.getArray("members").getArray();
+            if(members.length == 0){
+                String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
+                st.executeUpdate(deletePenaltyCommand);
+            }
+            return penaltyArray.toString();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 }

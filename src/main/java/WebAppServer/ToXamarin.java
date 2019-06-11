@@ -158,4 +158,12 @@ public class ToXamarin {
     public String xgetPenalty(@RequestParam(value="userId") int userId){
         return getPenalty(userId);
     }
+
+    @GetMapping("removePenalty")
+    public String xremovePenalty(@RequestParam(value="date") String date,
+                                @RequestParam(value="taskid") int taskid,
+                                @RequestParam(value="member") int member,
+                                 @RequestParam(value="owner") int owner) {
+        return removePenalty(date, taskid, member, owner);
+    }
 }
