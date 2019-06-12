@@ -507,8 +507,8 @@ public class ToDatabase {
     public static String getAllMyTask(int userId){
         try {
             Statement st = conn.createStatement();
-            checkDeadline(userId);
-            String mytasksStr = String.format("SELECT mytask FROM users WHERE userid = %d AND valid = true" ,userId);
+            //checkDeadline(userId);
+            String mytasksStr = String.format("SELECT mytask FROM users WHERE userid = %d" ,userId);
             ResultSet mytasks = st.executeQuery(mytasksStr);
             if(mytasks.next()){
                 Long[] taskid = (Long[]) mytasks.getArray(1).getArray();
@@ -521,7 +521,7 @@ public class ToDatabase {
                 if(tasks.length() == 0) {
                     return jsonArray.toString();
                 }
-                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + tasks + ")";
+                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + tasks + ") AND valid = true";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
@@ -660,7 +660,8 @@ public class ToDatabase {
             st.execute(String.format(addIndvUpdate, updatenum , ownerid));
 
             //TODO update progress
-            String progressTrackCommand = String.format("UPDATE progresstrack SET progress = progress+1 WHERE taskid = %d AND memberid = %d",
+            String progressTrackCommand = String.format(
+                    "UPDATE progresstrack SET progress = progress+1, checkcount = checkcount+1 WHERE taskid = %d AND memberid = %d",
                     taskid, ownerid);
             st.executeUpdate(progressTrackCommand);
 
@@ -797,7 +798,7 @@ public class ToDatabase {
         }
     }
 
-    //TODO zhenzhen also doesn't know what she is writing about???????????
+
     public static void checkAllUsersDeadline() {
         try{
             Statement st = conn.createStatement();
@@ -850,7 +851,8 @@ public class ToDatabase {
                                 st.executeUpdate(recordPenaltyCommand);
                                 String removeMyselfCommand = String.format("UPDATE penalty SET members = array_remove(members, '%d') WHERE  userid = %d AND taskid = %d", userid, userid, taskId);
                                 st.executeUpdate(removeMyselfCommand);
-
+                                String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1, WHERE taskid = %d AND memberid = %d",taskId, userid);
+                                st.executeUpdate(addPenaltyCountCommand);
                             }
                             else{
                                 break;
