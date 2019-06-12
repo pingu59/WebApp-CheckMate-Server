@@ -509,7 +509,7 @@ public class ToDatabase {
     public static String getAllMyTask(int userId){
         try {
             Statement st = conn.createStatement();
-            //checkDeadline(userId);
+            checkDeadline(userId);
             String mytasksStr = String.format("SELECT mytask FROM users WHERE userid = %d" ,userId);
             ResultSet mytasks = st.executeQuery(mytasksStr);
             if(mytasks.next()){
@@ -523,7 +523,7 @@ public class ToDatabase {
                 if(tasks.length() == 0) {
                     return jsonArray.toString();
                 }
-                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + tasks + ") AND valid = true";
+                String getInviteTaskInfo = "select * from grouptask where taskid in ( " + tasks + ")";
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
@@ -837,7 +837,7 @@ public class ToDatabase {
                     String members = taskInfo.getString("member");
                     int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
                     if(deadlineStatus == NO_RECENT_DEADLINE){
-                        return SUCCESS;
+                        //do nothing
                     }
                     else{   //check progress and frequency
                         String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
@@ -852,7 +852,7 @@ public class ToDatabase {
                                 st.executeUpdate(recordPenaltyCommand);
                                 String removeMyselfCommand = String.format("UPDATE penalty SET members = array_remove(members, '%d') WHERE  userid = %d AND taskid = %d", userid, userid, taskId);
                                 st.executeUpdate(removeMyselfCommand);
-                                String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1, WHERE taskid = %d AND memberid = %d",taskId, userid);
+                                String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1 WHERE taskid = %d AND memberid = %d",taskId, userid);
                                 st.executeUpdate(addPenaltyCountCommand);
                             }
                             else{
@@ -866,6 +866,10 @@ public class ToDatabase {
                         else{
                             String setTaskInvalid = String.format("UPDATE grouptask SET valid = false WHERE taskid = %d", taskId);
                             st.executeUpdate(setTaskInvalid);
+                            String removeFromTask = String.format("UPDATE users SET mytask = array_remove(mytask, '%d') WHERE userid = %d",taskId, userid);
+                            st.executeUpdate(removeFromTask);
+                            String addToCompleteTask = String.format("UPDATE users SET completetask = array_append(completetask, '%d') WHERE userid = %d",taskId, userid);
+                            st.executeUpdate(addToCompleteTask);
                         }
 
                     }
@@ -953,6 +957,34 @@ public class ToDatabase {
 
     //TODO
     public static String getCompletedStat(int userid){
-        return null;
+        try {
+            JSONArray completeStats = new JSONArray();
+            Statement st = conn.createStatement();
+            String getUserCommand = "SELECT * FROM users WHERE userid = "+ userid;
+            ResultSet user = st.executeQuery(getUserCommand);
+            if(user.next()){
+                Long[] completeTasks = (Long[]) user.getArray("completetask").getArray();
+                for(long taskid : completeTasks){
+                    String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
+                    ResultSet progress = st.executeQuery(getProgressInfo);
+                    if(progress.next()){
+                        String taskname = progress.getString("taskname");
+                        int checkcount = progress.getInt("checkcount");
+                        int penaltycount = progress.getInt("penaltycount");
+                        int totalcheck = progress.getInt("totalcheck");
+                        JSONObject taskStats = new JSONObject();
+                        taskStats.put("taskid",taskid);
+                        taskStats.put("taskname", taskname);
+                        taskStats.put("completed",checkcount);
+                        taskStats.put("failed", penaltycount);
+                        taskStats.put("total", totalcheck);
+                        completeStats.put(taskStats);
+                    }
+                }
+            }
+            return completeStats.toString();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 }
