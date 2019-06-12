@@ -715,57 +715,6 @@ public class ToDatabase {
         }
     }
 
-    //task history: checkerName/updateNumber/taskName
-    public static String getIndvHistory(int userid) {
-        try {
-            Statement st = conn.createStatement();
-            //get individual tasks for this user
-            String getIndvTaskId = "select mytask from users where userid = " + userid;
-            ResultSet taskIdResult = st.executeQuery(getIndvTaskId);
-            taskIdResult.next();
-            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
-            JSONArray history = new JSONArray();
-
-            for (Long taskId : taskIds) {
-                //get taskName from individual for each individual task
-                String getIndvTaskName = "select taskname from grouptask where taskid = " + taskId;
-                ResultSet taskNameResult = st.executeQuery(getIndvTaskName);
-                if(taskNameResult.next()) {
-                    String taskName = taskNameResult.getString(1);
-
-                    //get checkerid for each taskupdate
-                    String getCheckerId = "select * from progressupdate where taskid = " + taskId;
-                    ResultSet checkerIdResult = st.executeQuery(getCheckerId);
-                    while(checkerIdResult.next()) {
-                        //get checkerName from users
-                        int checkerId = Integer.parseInt(checkerIdResult.getString("checkerid"));
-                        int updateNum = Integer.parseInt(checkerIdResult.getString("updatenum"));
-                        String image = checkerIdResult.getString("image");
-
-                        Statement st1 = conn.createStatement();
-                        String getCheckerName = "select username from users where userid = " + checkerId;
-                        ResultSet checkerNameResult = st1.executeQuery(getCheckerName);
-                        if(checkerNameResult.next()) {
-                            String checkerName = checkerNameResult.getString(1);
-                            JSONObject obj = new JSONObject();
-                            obj.put("taskName", taskName);
-                            obj.put("updateNumber", updateNum);
-                            obj.put("checkerName", checkerName);
-                            obj.put("image", image);
-                            history.put(obj);
-                        }
-                        st1.close();
-                    }
-                }
-            }
-            st.close();
-            return history.toString();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
 
     public static String getMembersProgress(int taskid) {
         try {
@@ -955,7 +904,6 @@ public class ToDatabase {
         }
     }
 
-    //TODO
     public static String getCompletedStat(int userid){
         try {
             JSONArray completeStats = new JSONArray();
@@ -983,6 +931,140 @@ public class ToDatabase {
                 }
             }
             return completeStats.toString();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    //task history: checkerName/updateNumber/taskName
+    public static String getIndvHistory(int userid) {
+        try {
+            Statement st = conn.createStatement();
+            //get individual tasks for this user
+            String getIndvTaskId = "select mytask from users where userid = " + userid;
+            ResultSet taskIdResult = st.executeQuery(getIndvTaskId);
+            taskIdResult.next();
+            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
+            JSONArray history = new JSONArray();
+
+            for (Long taskId : taskIds) {
+                //get taskName from individual for each individual task
+                String getIndvTaskName = "select taskname from grouptask where taskid = " + taskId;
+                ResultSet taskNameResult = st.executeQuery(getIndvTaskName);
+                if(taskNameResult.next()) {
+                    String taskName = taskNameResult.getString(1);
+
+                    //get checkerid for each taskupdate
+                    String getCheckerId = "select * from progressupdate where taskid = " + taskId;
+                    ResultSet checkerIdResult = st.executeQuery(getCheckerId);
+                    while(checkerIdResult.next()) {
+                        //get checkerName from users
+                        int checkerId = Integer.parseInt(checkerIdResult.getString("checkerid"));
+                        int updateNum = Integer.parseInt(checkerIdResult.getString("updatenum"));
+                        String image = checkerIdResult.getString("image");
+
+                        Statement st1 = conn.createStatement();
+                        String getCheckerName = "select username from users where userid = " + checkerId;
+                        ResultSet checkerNameResult = st1.executeQuery(getCheckerName);
+                        if(checkerNameResult.next()) {
+                            String checkerName = checkerNameResult.getString(1);
+                            JSONObject obj = new JSONObject();
+                            obj.put("taskName", taskName);
+                            obj.put("updateNumber", updateNum);
+                            obj.put("checkerName", checkerName);
+                            obj.put("image", image);
+                            history.put(obj);
+                        }
+                        st1.close();
+                    }
+                }
+            }
+            st.close();
+            return history.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //task history: checkerName/updateNumber/taskName
+    public static String getCheckHistory(int userid, int taskid) {
+        try {
+            Statement st = conn.createStatement();
+            //get individual tasks for this user
+            JSONArray history = new JSONArray();
+            String getTaskname = "SELECT taskname FROM grouptask WHERE taskid =" + taskid;
+            ResultSet tasknameResult = st.executeQuery(getTaskname);
+            if (tasknameResult.next()) {
+                String taskname = tasknameResult.getString(1);
+                String getUpdateInfo = String.format("SELECT * FROM progressupdate WHERE taskid = %d AND userid = %d", taskid, userid);
+                ResultSet updateInfo = st.executeQuery(getUpdateInfo);
+                while (updateInfo.next()) {
+                    int checkerId = Integer.parseInt(updateInfo.getString("checkerid"));
+                    int updateNum = Integer.parseInt(updateInfo.getString("updatenum"));
+                    String image = updateInfo.getString("image");
+                    JSONObject update = new JSONObject();
+                    update.put("taskName", taskname);
+                    update.put("updateNumber", updateNum);
+                    update.put("checkerid", checkerId);
+                    update.put("image", image);
+                    history.put(update);
+                }
+            }
+            st.close();
+            return history.toString();
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static String getProgressHistory(int userid){
+        try {
+            JSONArray progressHistory = new JSONArray();
+            Statement st = conn.createStatement();
+            String getUserCommand = "SELECT * FROM users WHERE userid = "+ userid;
+            ResultSet user = st.executeQuery(getUserCommand);
+            if(user.next()){
+
+                //get complete task history
+                Long[] completeTasks = (Long[]) user.getArray("completetask").getArray();
+                for(long taskid : completeTasks){
+                    String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
+                    ResultSet progress = st.executeQuery(getProgressInfo);
+                    if(progress.next()){
+                        String taskname = progress.getString("taskname");
+                        int checkcount = progress.getInt("checkcount");
+                        int totalcheck = progress.getInt("totalcheck");
+                        float percentage = checkcount/totalcheck;
+                        JSONObject taskStats = new JSONObject();
+                        taskStats.put("taskid",taskid);
+                        taskStats.put("taskname", taskname);
+                        taskStats.put("percentage",percentage);
+                        taskStats.put("completed", true);
+                        progressHistory.put(taskStats);
+                    }
+                }
+
+                //get current task
+                Long[] currentTasks = (Long[]) user.getArray("mytask").getArray();
+                for(long taskid : currentTasks){
+                    String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
+                    ResultSet progress = st.executeQuery(getProgressInfo);
+                    if(progress.next()){
+                        String taskname = progress.getString("taskname");
+                        int checkcount = progress.getInt("checkcount");
+                        int totalcheck = progress.getInt("totalcheck");
+                        float percentage = checkcount/totalcheck;
+                        JSONObject taskStats = new JSONObject();
+                        taskStats.put("taskid",taskid);
+                        taskStats.put("taskname", taskname);
+                        taskStats.put("percentage",percentage);
+                        taskStats.put("completed", false);
+                        progressHistory.put(taskStats);
+                    }
+                }
+            }
+            return progressHistory.toString();
         }catch (SQLException e){
             throw new RuntimeException(e);
         }

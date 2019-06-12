@@ -139,11 +139,6 @@ public class ToXamarin {
         return String.valueOf(checkedNotification(myId));
     }
 
-    @GetMapping("/getHistory")
-    public String xgetHistory(@RequestParam(value="userId") int userId){
-        return String.valueOf(getIndvHistory(userId));
-    }
-
     @GetMapping("/checkDeadline")
     public String xcheckDeadline(@RequestParam(value="userId") int userId){
         return String.valueOf(checkDeadline(userId));
@@ -171,4 +166,16 @@ public class ToXamarin {
     public String xgetCompletedStat(@RequestParam(value="userId") int userid){
         return String.valueOf(getCompletedStat(userid));
     }
+
+    @GetMapping("/getHistory")
+    public String xgetHistory(@RequestParam(value="userId") int userId,
+                              @RequestParam(value="taskId") int taskid){
+        return String.valueOf(getCheckHistory(userId,taskid));
+    }
+
+    @GetMapping("getSummaries")
+    public String xgetProgressHistory(@RequestParam(value="userId") int userId){
+        return getProgressHistory(userId);
+    }
+
 }
