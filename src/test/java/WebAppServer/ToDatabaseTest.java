@@ -24,8 +24,4 @@ public class ToDatabaseTest {
   public void login() {
   }
 
-//  @Test
-//  public void gettask(){
-//    System.out.println(ToDatabase.getAllMyTask(2));
-//  }
 }

@@ -351,8 +351,10 @@ public class ToDatabase {
     }
 
     private static int calculateTotalCheck(int frequency, String repetition, String date) {
+        String[] dateInfo = date.split("/");
+        LocalDate deadline = LocalDate.of(Integer.parseInt(dateInfo[2]),Integer.parseInt(dateInfo[1]),Integer.parseInt(dateInfo[0]));
         LocalDate today = LocalDate.now();
-        LocalDate deadline = LocalDate.parse(date);
+        //LocalDate deadline = LocalDate.parse(date);
         long daysBetween = DAYS.between(today, deadline);
         long weeksBetween = WEEKS.between(today,deadline);
         long monthsBetween = MONTHS.between(today,deadline);
@@ -714,7 +716,6 @@ public class ToDatabase {
     }
 
     //task history: checkerName/updateNumber/taskName
-    //TODO NEED TO CHANGE SQL, NO INDIVIDUAL COLUMN ANYMORE!!!!!!
     public static String getIndvHistory(int userid) {
         try {
             Statement st = conn.createStatement();
