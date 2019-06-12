@@ -71,21 +71,17 @@ public class ToDatabase {
         }
     }
 
-    public static int register(String username, String password){
+    public static int register(String username, String password, int avatarNum){
         // add assertion to the length of the user name at xamarin!!
         try {
             Statement st = conn.createStatement();
             ResultSet largestId = st.executeQuery("select max(userid) from users");
             largestId.next();
             int thisId =  Integer.parseInt(largestId.getString(1))+1;
-            System.out.println(" " + thisId);
             String encryptedPwd = encrypt(password);
-            System.out.println("thisId = "+ thisId + " encryptedPwd = " + encryptedPwd);
-            System.out.println("INSERT INTO users VALUES (" + thisId +", '{" + username +
-                    "}', '{" + encryptedPwd + "}')");
-            int rowAffected = st.executeUpdate("INSERT INTO users(userid, username, password) VALUES (" + thisId +", '{" + username +
-                    "}', '{" + encryptedPwd + "}')");
-            System.out.println("affected " + rowAffected +"rows");
+
+            String insertUserCommand = String.format("INSERT INTO users(userid, username, password, avatarnum) VALUES(%d, '{%s}','{%s}',%d)",thisId,username,encryptedPwd,avatarNum);
+            st.executeUpdate(insertUserCommand);
             largestId.close();
             st.close();
             return thisId;
@@ -246,32 +242,61 @@ public class ToDatabase {
         return arrayString;
     }
 
+//    public static String getFriends(int userid){
+//        try {
+//            Statement st = conn.createStatement();
+//            String command = "select friends from users where userid = " + userid;
+//            ResultSet resultSet = st.executeQuery(command);
+//            if(resultSet.next()){
+//                Array array = resultSet.getArray(1);
+//                Long[] IDs = (Long[]) array.getArray();
+//                resultSet.close();
+//                List<Friend> friendList = new ArrayList <>();
+//                for(Long id: IDs){
+//                    String findFriend = "select username from users where userid = " + id;
+//                    ResultSet friendResult = st.executeQuery(findFriend);
+//                    if(friendResult.next()){
+//                        String friendName = friendResult.getString(1);
+//                       friendList.add(new Friend(id.intValue(), friendName));
+//                    }
+//                }
+//                st.close();
+//                return JSONConvert.friendsToJSON(friendList);
+//            }
+//            else{
+//                return "NULL";
+//            }
+//        }catch (SQLException e){
+//            return "failure";
+//        }
+//    }
+
     public static String getFriends(int userid){
         try {
+            JSONArray friendsArray = new JSONArray();
             Statement st = conn.createStatement();
-            String command = "select friends from users where userid = " + userid;
-            ResultSet resultSet = st.executeQuery(command);
-            if(resultSet.next()){
-                Array array = resultSet.getArray(1);
-                Long[] IDs = (Long[]) array.getArray();
-                resultSet.close();
-                List<Friend> friendList = new ArrayList <>();
-                for(Long id: IDs){
-                    String findFriend = "select username from users where userid = " + id;
-                    ResultSet friendResult = st.executeQuery(findFriend);
+            String getFriendsCommand = "SELECT friends FROM users WHERE userid = "+ userid;
+            ResultSet friends = st.executeQuery(getFriendsCommand);
+            if(friends.next()){
+                Long[] friendsID = (Long[]) friends.getArray(1).getArray();
+                for(long id : friendsID){
+                    String getFriendInfo = "SELECT * FROM users WHERE userid = " + id;
+                    ResultSet friendResult = st.executeQuery(getFriendInfo);
                     if(friendResult.next()){
-                        String friendName = friendResult.getString(1);
-                       friendList.add(new Friend(id.intValue(), friendName));
+                        String friendName = friendResult.getString("username");
+                        int friendAvatar = friendResult.getInt("avatarnum");
+                        JSONObject friend = new JSONObject();
+                        friend.put("FriendID",id);
+                        friend.put("FriendName",friendName);
+                        friend.put("avatarNum",friendAvatar);
+                        friendsArray.put(friend);
                     }
                 }
-                st.close();
-                return JSONConvert.friendsToJSON(friendList);
             }
-            else{
-                return "NULL";
-            }
+            st.close();
+            return friendsArray.toString();
         }catch (SQLException e){
-            return "failure";
+            throw new RuntimeException(e);
         }
     }
 
@@ -284,8 +309,9 @@ public class ToDatabase {
             System.out.println("1");
             JSONObject jobj = new JSONObject();
             System.out.println("2");
-            jobj.put("FriendID", userInfo.getObject(1));
-            jobj.put("FriendName", userInfo.getObject(2));
+            jobj.put("FriendID", userInfo.getObject("userid"));
+            jobj.put("FriendName", userInfo.getObject("username"));
+            jobj.put("avatarNum", userInfo.getInt("avatarNum"));
             System.out.println("3");
             st.close();
             return jobj.toString();

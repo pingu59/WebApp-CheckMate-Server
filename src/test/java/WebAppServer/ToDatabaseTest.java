@@ -18,7 +18,9 @@ public class ToDatabaseTest {
 
   @Test
   public void register() {
-    //ToDatabase.register("testregister", "testingregister");
+    //ToDatabase.register("testavatar", "testingavatar",2);
+    //System.out.println(ToDatabase.getUserInfo(10));
+    System.out.println(ToDatabase.getFriends(2));
   }
 
   @Test
@@ -43,9 +45,10 @@ public class ToDatabaseTest {
 //  public void getSummary(){
 //    System.out.println(ToDatabase.getProgressHistory(3));
 //  }
-  @Test
-  public void getCompleteStats(){
-    ToDatabase.getCompletedStat(2);
-  }
+//  @Test
+//  public void getCompleteStats(){
+//    ToDatabase.getCompletedStat(2);
+//  }
+
 
 }
