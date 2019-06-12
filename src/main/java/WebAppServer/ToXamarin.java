@@ -164,7 +164,9 @@ public class ToXamarin {
 
     @GetMapping("getCompletedStat")
     public String xgetCompletedStat(@RequestParam(value="userId") int userid){
-        return String.valueOf(getCompletedStat(userid));
+        String stats = String.valueOf(getCompletedStat(userid));
+
+        return stats;
     }
 
     @GetMapping("/getHistory")

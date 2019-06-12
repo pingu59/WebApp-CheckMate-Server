@@ -915,7 +915,7 @@ public class ToDatabase {
             if(user.next()){
                 Long[] completeTasks = (Long[]) user.getArray("completetask").getArray();
                 for(long taskid : completeTasks){
-                    String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
+                    String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d AND poped = false", userid, taskid);
                     ResultSet progress = st.executeQuery(getProgressInfo);
                     if(progress.next()){
                         String taskname = progress.getString("taskname");
@@ -930,6 +930,8 @@ public class ToDatabase {
                         taskStats.put("total", totalcheck);
                         completeStats.put(taskStats);
                     }
+                    String updatePop = String.format("UPDATE progresstrack SET poped = true WHERE memberid = %d AND taskid = %d", userid, taskid);
+                    st.executeUpdate(updatePop);
                 }
             }
             return completeStats.toString();

@@ -41,7 +41,11 @@ public class ToDatabaseTest {
 //  }
 //  @Test
 //  public void getSummary(){
-//    System.out.println(ToDatabase.getProgressHistory(2));
+//    System.out.println(ToDatabase.getProgressHistory(3));
 //  }
+  @Test
+  public void getCompleteStats(){
+    ToDatabase.getCompletedStat(2);
+  }
 
 }
