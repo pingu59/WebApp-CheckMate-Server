@@ -13,6 +13,7 @@ public class JSONConvert {
         jobj.put("userid", user.getUserId());
         jobj.put("username", user.getUsername());
         jobj.put("password", user.getPassword());
+        jobj.put("avatarNum", user.getAvatar());
         return jobj.toString();
     }
 

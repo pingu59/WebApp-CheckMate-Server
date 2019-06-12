@@ -2,11 +2,12 @@ package WebAppServer;
 
 public class User {
     private int userId;
-    private String username, password;
-    public User(int userId, String username, String password){
+    private String username, password, avatarNum;
+    public User(int userId, String username, String password, String avatarNum){
         this.userId = userId;
         this.password = password;
         this.username = username;
+        this.avatarNum = avatarNum;
     }
 
     public User(int userId, String username){
@@ -44,5 +45,9 @@ public class User {
     @Override
     public String toString() {
         return username + " " + password;
+    }
+
+    public String getAvatar() {
+        return avatarNum;
     }
 }

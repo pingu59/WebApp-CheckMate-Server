@@ -101,13 +101,14 @@ public class ToDatabase {
             if(userDetail.next()){
                 String username = userDetail.getString(2);
                 String password = userDetail.getString(3);
+                String avatarNum = userDetail.getString(12);
                 userDetail.close();
                 st.close();
                 String encryptedPasswordEntered = "{"+encrypt(passwordEntered)+"}";
                 //if id and password matches, return all the info needed in json afterwards
                 if(password.equals(encryptedPasswordEntered)){
                     responseCode = SUCCESS;
-                    userJson = JSONConvert.userToJSON(new User(userID, username, password));
+                    userJson = JSONConvert.userToJSON(new User(userID, username, password, avatarNum));
                 }
                 else{
                     responseCode = INCORRECT_PWD;
