@@ -18,6 +18,7 @@ public class ToDatabaseTest {
 
   @Test
   public void register() {
+    //ToDatabase.register("testregister", "testingregister");
   }
 
   @Test
@@ -37,6 +38,10 @@ public class ToDatabaseTest {
 //  @Test
 //  public void getAllMyCompleteTest(){
 //    System.out.println(ToDatabase.getCompletedStat(2));
+//  }
+//  @Test
+//  public void getSummary(){
+//    System.out.println(ToDatabase.getProgressHistory(2));
 //  }
 
 }

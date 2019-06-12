@@ -75,15 +75,15 @@ public class ToDatabase {
         // add assertion to the length of the user name at xamarin!!
         try {
             Statement st = conn.createStatement();
-            ResultSet largestId = st.executeQuery("select count(*) from users");
+            ResultSet largestId = st.executeQuery("select max(userid) from users");
             largestId.next();
-            int thisId =  Integer.parseInt(largestId.getString(1));
+            int thisId =  Integer.parseInt(largestId.getString(1))+1;
             System.out.println(" " + thisId);
             String encryptedPwd = encrypt(password);
             System.out.println("thisId = "+ thisId + " encryptedPwd = " + encryptedPwd);
             System.out.println("INSERT INTO users VALUES (" + thisId +", '{" + username +
                     "}', '{" + encryptedPwd + "}')");
-            int rowAffected = st.executeUpdate("INSERT INTO users VALUES (" + thisId +", '{" + username +
+            int rowAffected = st.executeUpdate("INSERT INTO users(userid, username, password) VALUES (" + thisId +", '{" + username +
                     "}', '{" + encryptedPwd + "}')");
             System.out.println("affected " + rowAffected +"rows");
             largestId.close();
@@ -535,7 +535,9 @@ public class ToDatabase {
                     for(int c = 0; c < 7; c++) {
                         jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
                     }
-                    jObj.put("bet", inviteTaskInfoResult.getString(9));
+                    String betStr = inviteTaskInfoResult.getString(9);
+                    betStr = betStr.substring(1, betStr.length()-1);
+                    jObj.put("bet", betStr);
                     jsonArray.put(jObj);
                 }
                 st.close();
@@ -1028,6 +1030,7 @@ public class ToDatabase {
 
                 //get complete task history
                 Long[] completeTasks = (Long[]) user.getArray("completetask").getArray();
+                Long[] currentTasks = (Long[]) user.getArray("mytask").getArray();
                 for(long taskid : completeTasks){
                     String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
                     ResultSet progress = st.executeQuery(getProgressInfo);
@@ -1046,7 +1049,6 @@ public class ToDatabase {
                 }
 
                 //get current task
-                Long[] currentTasks = (Long[]) user.getArray("mytask").getArray();
                 for(long taskid : currentTasks){
                     String getProgressInfo = String.format("SELECT * FROM progresstrack WHERE memberid = %d AND taskid = %d", userid, taskid);
                     ResultSet progress = st.executeQuery(getProgressInfo);
@@ -1064,6 +1066,7 @@ public class ToDatabase {
                     }
                 }
             }
+            st.close();
             return progressHistory.toString();
         }catch (SQLException e){
             throw new RuntimeException(e);
