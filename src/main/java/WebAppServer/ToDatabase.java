@@ -15,9 +15,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.*;
 
 public class ToDatabase {
     private static Connection conn = connect();
@@ -333,17 +336,37 @@ public class ToDatabase {
                 }
             }
             //TODO initialize progress track for each member
+            int totalcheck = calculateTotalCheck(frequency, repetition, date);
             for(int memberid : members){
-                String insertProgressCommand = String.format("INSERT INTO progresstrack VALUES(%d, %d, 0, %d)", taskId, memberid, frequency);
-                System.out.println(insertProgressCommand);
-                st.executeUpdate(insertProgressCommand);
+                String insertProgressTrack = String.format("INSERT INTO progresstrack(taskid, memberid, frequency, totalcheck, taskname)" +
+                        "VALUES(%d,%d,%d,%d,'{%s}')",taskId, memberid, frequency, totalcheck, taskName);
+                System.out.println(insertProgressTrack);
+                st.executeUpdate(insertProgressTrack);
             }
-
             st.close();
             return taskId;
         }catch (SQLException e){
             return SERVER_FAILURE;
         }
+    }
+
+    private static int calculateTotalCheck(int frequency, String repetition, String date) {
+        LocalDate today = LocalDate.now();
+        LocalDate deadline = LocalDate.parse(date);
+        long daysBetween = DAYS.between(today, deadline);
+        long weeksBetween = WEEKS.between(today,deadline);
+        long monthsBetween = MONTHS.between(today,deadline);
+        switch (repetition){
+            case "None":
+                return frequency;
+            case "Daily":
+                return (int)daysBetween*frequency;
+            case "Weekly":
+                return (int)weeksBetween*frequency;
+            case "Monthly":
+                return (int)monthsBetween*frequency;
+        }
+        return SERVER_FAILURE;
     }
 
     public static int deleteIndvTask(int taskId){
@@ -484,7 +507,8 @@ public class ToDatabase {
     public static String getAllMyTask(int userId){
         try {
             Statement st = conn.createStatement();
-            String mytasksStr = "select mytask from users where userid = " + userId;
+            checkDeadline(userId);
+            String mytasksStr = String.format("SELECT mytask FROM users WHERE userid = %d AND valid = true" ,userId);
             ResultSet mytasks = st.executeQuery(mytasksStr);
             if(mytasks.next()){
                 Long[] taskid = (Long[]) mytasks.getArray(1).getArray();
@@ -799,7 +823,6 @@ public class ToDatabase {
             ResultSet taskIdResult = st.executeQuery(getTasksCommand);
             taskIdResult.next();
             Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
-            JSONArray unfinishedTasks = new JSONArray();
 
             for (Long taskId : taskIds) {
                 //get task info from group task table
@@ -908,20 +931,25 @@ public class ToDatabase {
                                                         "WHERE userid = %d AND taskid = %d AND date = '{%s}' "),owner,member,taskid, date);
             st.executeUpdate(updatePenaltyCommand);
 
-            String getPenaltyMember = String.format("SELECT * FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
-            ResultSet penaltyInfo = st.executeQuery(getPenaltyMember);
-            if(penaltyInfo.next()){
-                Long[] members = (Long [])penaltyInfo.getArray("members").getArray();
-                if(members.length == 0){
-                    String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
-                    st.executeUpdate(deletePenaltyCommand);
-                }
-            }
+//            String getPenaltyMember = String.format("SELECT * FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
+//            ResultSet penaltyInfo = st.executeQuery(getPenaltyMember);
+//            if(penaltyInfo.next()){
+//                Long[] members = (Long [])penaltyInfo.getArray("members").getArray();
+//                if(members.length == 0){
+//                    String deletePenaltyCommand = String.format("DELETE FROM penalty WHERE userid = %d AND taskid = %d AND date = '{%s}' ", member, taskid, date);
+//                    st.executeUpdate(deletePenaltyCommand);
+//                }
+//            }
 
             st.close();
             return 1;
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
+    }
+
+    //TODO
+    public static String getCompletedStat(int userid){
+        return null;
     }
 }

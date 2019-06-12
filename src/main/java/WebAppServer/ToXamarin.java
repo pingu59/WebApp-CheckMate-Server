@@ -166,4 +166,9 @@ public class ToXamarin {
                                  @RequestParam(value="owner") int owner) {
         return String.valueOf(removePenalty(date, taskid, member, owner));
     }
+
+    @GetMapping("getCompletedStat")
+    public String xgetCompletedStat(@RequestParam(value="userId") int userid){
+        return String.valueOf(getCompletedStat(userid));
+    }
 }
