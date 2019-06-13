@@ -863,12 +863,24 @@ public class ToDatabase {
                 int taskid = penalty.getInt("taskid");
                 String date = penalty.getString("date");
                 Long[] members = (Long[]) penalty.getArray("members").getArray();
-                JSONObject penaltyObj = new JSONObject();
-                penaltyObj.put("taskid", taskid);
-                penaltyObj.put("date", date);
-                penaltyObj.put("members", Arrays.asList(members));
-                penaltyArray.put(penaltyObj);
+
+                Statement st1 = conn.createStatement();
+                String getTaskInfo = "SELECT * FROM grouptask WHERE taskid = "+ taskid;
+                ResultSet taskinfo = st1.executeQuery(getTaskInfo);
+                if(taskinfo.next()){
+                    String taskname = taskinfo.getString("taskname");
+                    String bet = taskinfo.getString("bet");
+                    JSONObject penaltyObj = new JSONObject();
+                    penaltyObj.put("taskid", taskid);
+                    penaltyObj.put("date", date);
+                    penaltyObj.put("members", Arrays.asList(members));
+                    penaltyObj.put("taskname", taskname);
+                    penaltyObj.put("bet",bet);
+                    penaltyArray.put(penaltyObj);
+                }
+                st1.close();
             }
+            st.close();
             return penaltyArray.toString();
         }catch (SQLException e){
             throw new RuntimeException(e);
