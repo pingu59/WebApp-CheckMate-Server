@@ -1053,7 +1053,7 @@ public class ToDatabase {
                         String taskname = progress.getString("taskname");
                         int checkcount = progress.getInt("checkcount");
                         int totalcheck = progress.getInt("totalcheck");
-                        float percentage = checkcount/totalcheck;
+                        double percentage = (double)checkcount/(double)totalcheck;
                         JSONObject taskStats = new JSONObject();
                         taskStats.put("taskid",taskid);
                         taskStats.put("taskname", taskname);
