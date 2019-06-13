@@ -16,16 +16,20 @@ public class ToDatabaseTest {
   public void getUser() {
   }
 
-  @Test
-  public void register() {
-    //ToDatabase.register("testavatar", "testingavatar",2);
-    //System.out.println(ToDatabase.getUserInfo(10));
-    System.out.println(ToDatabase.getFriends(2));
-  }
-
-  @Test
-  public void login() {
-  }
+//  @Test
+//  public void register() {
+//    //ToDatabase.register("testavatar", "testingavatar",2);
+//    //System.out.println(ToDatabase.getUserInfo(10));
+//    System.out.println(ToDatabase.getFriends(2));
+//  }
+//
+//  @Test
+//  public void login() {
+//  }
+//  @Test
+//  public void getSummary(){
+//    System.out.println(ToDatabase.getProgressHistory(2));
+//  }
 
 //  @Test
 //  public void createTask(){

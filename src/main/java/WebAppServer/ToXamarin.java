@@ -178,6 +178,7 @@ public class ToXamarin {
 
     @GetMapping("getSummaries")
     public String xgetProgressHistory(@RequestParam(value="userId") int userId){
+
         return getProgressHistory(userId);
     }
 

@@ -243,35 +243,6 @@ public class ToDatabase {
         return arrayString;
     }
 
-//    public static String getFriends(int userid){
-//        try {
-//            Statement st = conn.createStatement();
-//            String command = "select friends from users where userid = " + userid;
-//            ResultSet resultSet = st.executeQuery(command);
-//            if(resultSet.next()){
-//                Array array = resultSet.getArray(1);
-//                Long[] IDs = (Long[]) array.getArray();
-//                resultSet.close();
-//                List<Friend> friendList = new ArrayList <>();
-//                for(Long id: IDs){
-//                    String findFriend = "select username from users where userid = " + id;
-//                    ResultSet friendResult = st.executeQuery(findFriend);
-//                    if(friendResult.next()){
-//                        String friendName = friendResult.getString(1);
-//                       friendList.add(new Friend(id.intValue(), friendName));
-//                    }
-//                }
-//                st.close();
-//                return JSONConvert.friendsToJSON(friendList);
-//            }
-//            else{
-//                return "NULL";
-//            }
-//        }catch (SQLException e){
-//            return "failure";
-//        }
-//    }
-
     public static String getFriends(int userid){
         try {
             JSONArray friendsArray = new JSONArray();
@@ -833,9 +804,6 @@ public class ToDatabase {
                                 String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1 WHERE taskid = %d AND memberid = %d",taskId, userid);
                                 st.executeUpdate(addPenaltyCountCommand);
                             }
-                            else{
-                                break;
-                            }
                         }
                         if(deadlineStatus == MEET_RECENT_DEADLINE){
                             String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE userid = %d AND taskid = %d", userid, taskId);
@@ -1067,7 +1035,7 @@ public class ToDatabase {
                         String taskname = progress.getString("taskname");
                         int checkcount = progress.getInt("checkcount");
                         int totalcheck = progress.getInt("totalcheck");
-                        float percentage = checkcount/totalcheck;
+                        double percentage = (double) checkcount/(double) totalcheck;
                         JSONObject taskStats = new JSONObject();
                         taskStats.put("taskid",taskid);
                         taskStats.put("taskname", taskname);
