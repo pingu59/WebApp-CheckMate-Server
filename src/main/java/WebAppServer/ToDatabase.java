@@ -874,8 +874,8 @@ public class ToDatabase {
                     penaltyObj.put("taskid", taskid);
                     penaltyObj.put("date", date);
                     penaltyObj.put("members", Arrays.asList(members));
-                    penaltyObj.put("taskname", taskname);
-                    penaltyObj.put("bet",bet);
+                    penaltyObj.put("taskname", removeRedundantChar(taskname));
+                    penaltyObj.put("bet",removeRedundantChar(bet));
                     penaltyArray.put(penaltyObj);
                 }
                 st1.close();
@@ -885,6 +885,13 @@ public class ToDatabase {
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
+    }
+
+    private static String removeRedundantChar(String string){
+        if(string.contains("{") || string.contains("\"")){
+            return string.substring(1,string.length()-1);
+        }
+        return string;
     }
 
 
