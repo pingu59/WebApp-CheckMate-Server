@@ -140,7 +140,8 @@ public class ToDatabase {
 
 
     //TODO duplicates not handled
-    public static Long[] getFriendRequestList(int id){
+    @Deprecated
+    public static Long[] getFriendRequestList1(int id){
         try {
             Statement st = conn.createStatement();
             ResultSet userDetail = st.executeQuery("select * from users where userid = " + id);
@@ -153,6 +154,35 @@ public class ToDatabase {
             }else{
                 return new Long[0];
             }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getFriendRequestList(int id){
+        try{
+            JSONArray friendRequests = new JSONArray();
+            Statement st = conn.createStatement();
+            String getUserInfo = "SELECT * FROM users WHERE userid = " + id;
+            ResultSet userInfo = st.executeQuery(getUserInfo);
+            if(userInfo.next()){
+                Long[] friendReq = (Long[])userInfo.getArray("friendreq").getArray();
+                for(long friendid : friendReq){
+                    String getNewFriendInfo = "SELECT * FROM users WHERE userid = " + friendid;
+                    ResultSet friendInfo = st.executeQuery(getNewFriendInfo);
+                    if(friendInfo.next()){
+                        String friendname = friendInfo.getString("username");
+                        int avatarNum = friendInfo.getInt("avatarnum");
+                        JSONObject friend = new JSONObject();
+                        friend.put("FriendID",friendid);
+                        friend.put("FriendName",friendname);
+                        friend.put("avatarNum",avatarNum);
+                        friendRequests.put(friend);
+                    }
+                }
+            }
+            st.close();
+            return friendRequests.toString();
         }catch (SQLException e){
             throw new RuntimeException(e);
         }

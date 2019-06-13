@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6c7dd641-7f85-4fe4-ac05-a678af715f2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -22,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="892" column="27" selection-start-line="892" selection-start-column="27" selection-end-line="892" selection-end-column="27" />
+            <state relative-caret-position="16">
+              <caret line="161" column="25" selection-start-line="161" selection-start-column="25" selection-end-line="161" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -43,17 +45,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="154" column="21" lean-forward="true" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
+            <state relative-caret-position="293">
+              <caret line="30" column="29" lean-forward="true" selection-start-line="30" selection-start-column="29" selection-end-line="30" selection-end-column="29" />
+              <folding>
+                <element signature="e#1096#1097#0" expanded="true" />
+                <element signature="e#1143#1144#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="55" selection-start-line="55" selection-end-line="55" />
+            <state relative-caret-position="148">
+              <caret line="19" selection-start-line="19" selection-start-column="2" selection-end-line="23" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -121,6 +127,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>percentage</find>
+      <find>login</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,9 +136,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" />
         <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" />
+        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" />
+        <option value="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" />
       </list>
     </option>
   </component>
@@ -267,6 +274,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ToDatabaseTest.friend" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WebAppServer.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="WebAppServer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="WebAppServer" />
+      <option name="MAIN_CLASS_NAME" value="WebAppServer.ToDatabaseTest" />
+      <option name="METHOD_NAME" value="friend" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ToDatabaseTest.getSummary" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WebAppServer.test" />
       <extension name="coverage">
@@ -293,6 +316,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.ToDatabaseTest" />
+        <item itemvalue="JUnit.ToDatabaseTest.friend" />
         <item itemvalue="JUnit.ToDatabaseTest.checkDeadline" />
         <item itemvalue="JUnit.ToDatabaseTest.getSummary" />
       </list>
@@ -309,20 +333,11 @@
       <option name="presentableId" value="Default" />
       <updated>1560431637497</updated>
       <workItem from="1560431640290" duration="2952000" />
-      <workItem from="1560437635954" duration="1669000" />
+      <workItem from="1560437635954" duration="3732000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ToDatabaseTest_getSummary - 2019.06.13 at 14h 31m 37s.xml">
-      <configuration name="ToDatabaseTest.getSummary" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_getSummary - 2019.06.13 at 14h 31m 46s.xml">
-      <configuration name="ToDatabaseTest.getSummary" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ToDatabaseTest_getSummary - 2019.06.13 at 14h 34m 00s.xml">
-      <configuration name="ToDatabaseTest.getSummary" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="ToDatabaseTest_getSummary - 2019.06.13 at 14h 34m 44s.xml">
       <configuration name="ToDatabaseTest.getSummary" configurationId="JUnit" />
     </history-entry>
@@ -344,9 +359,18 @@
     <history-entry file="ToDatabaseTest - 2019.06.13 at 15h 04m 04s.xml">
       <configuration name="ToDatabaseTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ToDatabaseTest_friend - 2019.06.13 at 18h 07m 29s.xml">
+      <configuration name="ToDatabaseTest.friend" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_friend - 2019.06.13 at 18h 07m 45s.xml">
+      <configuration name="ToDatabaseTest.friend" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ToDatabaseTest_friend - 2019.06.13 at 18h 08m 08s.xml">
+      <configuration name="ToDatabaseTest.friend" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4621000" />
+    <option name="totallyTimeSpent" value="6684000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="17" y="23" width="1545" height="822" extended-state="0" />
@@ -362,7 +386,7 @@
       <window_info id="Web" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32921812" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32876712" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3978052" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -372,7 +396,7 @@
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="12" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32876712" />
       <window_info anchor="bottom" id="Java Enterprise" order="13" />
       <window_info anchor="bottom" id="Database Changes" order="14" />
       <window_info anchor="bottom" id="Version Control" order="15" />
@@ -392,18 +416,6 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java</url>
-          <line>775</line>
-          <properties />
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/App.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -416,13 +428,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="36" column="63" lean-forward="true" selection-start-line="36" selection-start-column="63" selection-end-line="36" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -472,24 +477,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/User.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="55" selection-start-line="55" selection-end-line="55" />
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="154" column="21" lean-forward="true" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
+        <state relative-caret-position="293">
+          <caret line="30" column="29" lean-forward="true" selection-start-line="30" selection-start-column="29" selection-end-line="30" selection-end-column="29" />
+          <folding>
+            <element signature="e#1096#1097#0" expanded="true" />
+            <element signature="e#1143#1144#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="892" column="27" selection-start-line="892" selection-start-column="27" selection-end-line="892" selection-end-column="27" />
+        <state relative-caret-position="16">
+          <caret line="161" column="25" selection-start-line="161" selection-start-column="25" selection-end-line="161" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="148">
+          <caret line="19" selection-start-line="19" selection-start-column="2" selection-end-line="23" selection-end-column="5" />
         </state>
       </provider>
     </entry>

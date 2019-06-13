@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import javax.swing.plaf.synth.SynthScrollBarUI;
 import java.util.Date;
 
 public class ToDatabaseTest {
@@ -16,6 +17,11 @@ public class ToDatabaseTest {
   public void getUser() {
   }
 
+//  @Test
+//  public void friend(){
+//    //System.out.println(ToDatabase.getFriendRequestList(14)[0]);
+//    System.out.println(ToDatabase.getFriendRequestList1(14));
+//  }
 //  @Test
 //  public void register() {
 //    //ToDatabase.register("testavatar", "testingavatar",2);
@@ -53,7 +59,6 @@ public class ToDatabaseTest {
 //  public void getCompleteStats(){
 //    ToDatabase.getCompletedStat(2);
 //  }
-
 
 
 }
