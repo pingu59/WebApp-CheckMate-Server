@@ -1089,7 +1089,7 @@ public class ToDatabase {
                         taskStats.put("taskid",taskid);
                         taskStats.put("taskname", taskname);
                         taskStats.put("percentage",percentage);
-                        taskStats.put("completed", "Completed");
+                        taskStats.put("completed", "Expired");
                         progressHistory.put(taskStats);
                     }
                 }
