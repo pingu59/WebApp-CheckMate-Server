@@ -1093,6 +1093,16 @@ public class ToDatabase {
                         taskStats.put("taskname", taskname);
                         taskStats.put("percentage",percentage);
                         taskStats.put("completed", "Expired");
+
+                        String getTaskicon = String.format("SELECT * FROM grouptask WHERE taskid = %d", taskid);
+                        ResultSet taskInfo = st.executeQuery(getTaskicon);
+                        if(taskInfo.next()){
+                            int taskicon = taskInfo.getInt("taskicon");
+                            taskStats.put("taskicon", taskicon);
+                        }
+                        else{
+                            taskStats.put("taskicon", 0);
+                        }
                         progressHistory.put(taskStats);
                     }
                 }
@@ -1111,6 +1121,16 @@ public class ToDatabase {
                         taskStats.put("taskname", taskname);
                         taskStats.put("percentage",percentage);
                         taskStats.put("completed", "In Progress");
+
+                        String getTaskicon = String.format("SELECT * FROM grouptask WHERE taskid = %d", taskid);
+                        ResultSet taskInfo = st.executeQuery(getTaskicon);
+                        if(taskInfo.next()){
+                            int taskicon = taskInfo.getInt("taskicon");
+                            taskStats.put("taskicon", taskicon);
+                        }
+                        else{
+                            taskStats.put("taskicon", 0);
+                        }
                         progressHistory.put(taskStats);
                     }
                 }
