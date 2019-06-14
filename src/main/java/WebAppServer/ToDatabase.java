@@ -327,7 +327,7 @@ public class ToDatabase {
 
     //create task
     public static int createTask(int myId, String taskName, String repetition, int frequency, int[] members,
-                                 String date, String bet){
+                                 String date, String bet, int taskicon){
         try {
             //connect
             Statement st = conn.createStatement();
@@ -345,11 +345,10 @@ public class ToDatabase {
             String supvStr = Arrays.toString(members);
             int last = supvStr.length() - 1;
             supvStr = supvStr.substring(1, last);
-            String insertTaskCommand = "INSERT INTO grouptask (taskid, creatorid, taskname, repetition, frequency, member, deadline, bet) "+
-                                        "VALUES(%d, %d, '{%s}','{%s}', %d,'{%s}','{%s}','{%s}')";
-            String sqlCommand = String.format(insertTaskCommand, taskId, myId, taskName, repetition, frequency, supvStr, date, bet);
+            String insertTaskCommand = "INSERT INTO grouptask (taskid, creatorid, taskname, repetition, frequency, member, deadline, bet, taskicon) "+
+                                        "VALUES(%d, %d, '{%s}','{%s}', %d,'{%s}','{%s}','{%s}', %d)";
+            String sqlCommand = String.format(insertTaskCommand, taskId, myId, taskName, repetition, frequency, supvStr, date, bet, taskicon);
             int rowAffected = st.executeUpdate(sqlCommand);
-            System.out.println("insert  " + rowAffected +" rows into grouptask");
             //update user table for the owner
             String memberString = Arrays.toString(members);
             int l = memberString.length() - 1;
@@ -563,9 +562,13 @@ public class ToDatabase {
                     for(int c = 0; c < 7; c++) {
                         jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
                     }
+
                     String betStr = inviteTaskInfoResult.getString(9);
                     betStr = betStr.substring(1, betStr.length()-1);
                     jObj.put("bet", betStr);
+
+                    int taskicon = inviteTaskInfoResult.getInt("taskicon");
+                    jObj.put("taskicon", taskicon);
                     jsonArray.put(jObj);
                 }
                 st.close();

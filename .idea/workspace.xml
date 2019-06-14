@@ -3,7 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="6c7dd641-7f85-4fe4-ac05-a678af715f2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/App.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/Friend.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/JSONConvert.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/ToDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/ToXamarin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/WebAppServer/User.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -26,8 +34,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="1093" column="21" lean-forward="true" selection-start-line="1093" selection-start-column="21" selection-end-line="1093" selection-end-column="21" />
+            <state relative-caret-position="1371">
+              <caret line="1071" column="25" selection-start-line="1071" selection-start-column="25" selection-end-line="1071" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -44,8 +52,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="536">
-              <caret line="181" column="24" lean-forward="true" selection-start-line="181" selection-start-column="24" selection-end-line="181" selection-end-column="24" />
+            <state relative-caret-position="505">
+              <caret line="182" column="25" selection-start-line="182" selection-start-column="25" selection-end-line="182" selection-end-column="25" />
               <folding>
                 <element signature="e#1096#1097#0" expanded="true" />
                 <element signature="e#1143#1144#0" expanded="true" />
@@ -57,8 +65,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-94">
-              <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+            <state relative-caret-position="323">
+              <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -127,6 +135,10 @@
     <findStrings>
       <find>percentage</find>
       <find>login</find>
+      <find>getuserinfo</find>
+      <find>∂</find>
+      <find>grouptask</find>
+      <find>createtask</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,8 +147,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" />
         <option value="$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java" />
         <option value="$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java" />
       </list>
     </option>
@@ -145,14 +157,13 @@
     <option name="x" value="17" />
     <option name="y" value="23" />
     <option name="width" value="1545" />
-    <option name="height" value="823" />
+    <option name="height" value="822" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -211,6 +222,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -333,7 +345,8 @@
       <updated>1560431637497</updated>
       <workItem from="1560431640290" duration="2952000" />
       <workItem from="1560437635954" duration="4197000" />
-      <workItem from="1560456325330" duration="53000" />
+      <workItem from="1560456325330" duration="894000" />
+      <workItem from="1560521937073" duration="1779000" />
     </task>
     <servers />
   </component>
@@ -370,13 +383,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7202000" />
+    <option name="totallyTimeSpent" value="9822000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="17" y="23" width="1545" height="823" extended-state="0" />
+    <frame x="17" y="23" width="1545" height="822" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25615436" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25948104" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -486,15 +499,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/WebAppServer/ToDatabaseTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-94">
-          <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+        <state relative-caret-position="323">
+          <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToXamarin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="181" column="24" lean-forward="true" selection-start-line="181" selection-start-column="24" selection-end-line="181" selection-end-column="24" />
+        <state relative-caret-position="505">
+          <caret line="182" column="25" selection-start-line="182" selection-start-column="25" selection-end-line="182" selection-end-column="25" />
           <folding>
             <element signature="e#1096#1097#0" expanded="true" />
             <element signature="e#1143#1144#0" expanded="true" />
@@ -504,8 +517,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/WebAppServer/ToDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="1093" column="21" lean-forward="true" selection-start-line="1093" selection-start-column="21" selection-end-line="1093" selection-end-column="21" />
+        <state relative-caret-position="1371">
+          <caret line="1071" column="25" selection-start-line="1071" selection-start-column="25" selection-end-line="1071" selection-end-column="25" />
         </state>
       </provider>
     </entry>

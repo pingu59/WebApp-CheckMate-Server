@@ -75,14 +75,15 @@ public class ToXamarin {
     }
 
     @GetMapping("/createTask")
-    public String xcreatIndividualTask(@RequestParam(value="myid") int myId,
+    public String xcreateTask(@RequestParam(value="myid") int myId,
                                        @RequestParam(value="taskname") String taskName,
                                        @RequestParam(value="repetition") String repetition,
                                        @RequestParam(value="frequency") int frequency,
                                        @RequestParam(value="members") int[] members,
                                        @RequestParam(value="deadline") String date,
-                                       @RequestParam(value="bet") String bet){
-        return String.valueOf(createTask(myId, taskName, repetition, frequency, members, date, bet));
+                                       @RequestParam(value="bet") String bet,
+                                       @RequestParam(value="taskicon") int icon){
+        return String.valueOf(createTask(myId, taskName, repetition, frequency, members, date, bet, icon));
     }
 
 
