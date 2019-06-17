@@ -59,5 +59,9 @@ public class ToDatabaseTest {
 //  public void getCompleteStats(){
 //    ToDatabase.getCompletedStat(2);
 //  }
+  @Test
+  public void t(){
+    System.out.println(ToDatabase.getAllMyTask(27));
+  }
 
 }

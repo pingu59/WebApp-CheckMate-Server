@@ -41,7 +41,7 @@ public class ToDatabase {
 
     private static final int MEET_FINAL_DEADLINE = 100;
     private static final int MEET_RECENT_DEADLINE = 101;
-    private static final int NO_RECENT_DEADLINE = 101;
+    private static final int NO_RECENT_DEADLINE = 102;
 
 
 
@@ -805,52 +805,52 @@ public class ToDatabase {
             //get all tasks of the user
             String getTasksCommand = "SELECT mytask FROM users WHERE userid = " + userid;
             ResultSet taskIdResult = st.executeQuery(getTasksCommand);
-            taskIdResult.next();
-            Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
+            if(taskIdResult.next()) {
 
-            for (Long taskId : taskIds) {
-                //get task info from group task table
-                String getTaskInfoCommand  = "SELECT * FROM grouptask WHERE taskid = " + taskId;
-                ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
-                if(taskInfo.next()) {
-                    LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
-                    LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
-                    String repetition = taskInfo.getString(REPETITION_COLUMN);
-                    String members = taskInfo.getString("member");
-                    int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
-                    if(deadlineStatus == NO_RECENT_DEADLINE){
-                        //do nothing
-                    }
-                    else{   //check progress and frequency
-                        String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
-                                + userid + " AND taskid = " + taskId;
-                        ResultSet progressInfo = st.executeQuery(getProgressCommand);
-                        if(progressInfo.next()){
-                            int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
-                            int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
-                            if(progress < frequency){
+                Long[] taskIds = (Long[]) taskIdResult.getArray(1).getArray();
 
-                                String recordPenaltyCommand = String.format("INSERT INTO penalty(userid, taskid, members) VALUES(%d, %d, '%s')", userid, taskId, members);
-                                st.executeUpdate(recordPenaltyCommand);
-                                String removeMyselfCommand = String.format("UPDATE penalty SET members = array_remove(members, '%d') WHERE  userid = %d AND taskid = %d", userid, userid, taskId);
-                                st.executeUpdate(removeMyselfCommand);
-                                String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1 WHERE taskid = %d AND memberid = %d",taskId, userid);
-                                st.executeUpdate(addPenaltyCountCommand);
+                for (Long taskId : taskIds) {
+                    //get task info from group task table
+                    String getTaskInfoCommand = "SELECT * FROM grouptask WHERE taskid = " + taskId;
+                    ResultSet taskInfo = st.executeQuery(getTaskInfoCommand);
+                    if (taskInfo.next()) {
+                        LocalDate startdate = taskInfo.getDate(STARTDATE_COLUMN).toLocalDate();
+                        LocalDate deadlineDate = taskInfo.getDate(DEADLINE_COLUMN).toLocalDate();
+                        String repetition = taskInfo.getString(REPETITION_COLUMN);
+                        String members = taskInfo.getString("member");
+                        int deadlineStatus = meetRecentDeadline(startdate, deadlineDate, repetition);
+                        if (deadlineStatus == NO_RECENT_DEADLINE) {
+                            //do nothing
+                        } else {   //check progress and frequency
+                            String getProgressCommand = "SELECT * FROM progresstrack WHERE memberid = "
+                                    + userid + " AND taskid = " + taskId;
+                            ResultSet progressInfo = st.executeQuery(getProgressCommand);
+                            if (progressInfo.next()) {
+                                int progress = progressInfo.getInt(TRACK_PROGRESS_COLUMN);
+                                int frequency = progressInfo.getInt(TRACK_FREQUENCY_COLUMN);
+                                if (progress < frequency) {
+
+                                    String recordPenaltyCommand = String.format("INSERT INTO penalty(userid, taskid, members) VALUES(%d, %d, '%s')", userid, taskId, members);
+                                    st.executeUpdate(recordPenaltyCommand);
+                                    String removeMyselfCommand = String.format("UPDATE penalty SET members = array_remove(members, '%d') WHERE  userid = %d AND taskid = %d", userid, userid, taskId);
+                                    st.executeUpdate(removeMyselfCommand);
+                                    String addPenaltyCountCommand = String.format("UPDATE progresstrack SET penaltycount = penaltycount+1 WHERE taskid = %d AND memberid = %d", taskId, userid);
+                                    st.executeUpdate(addPenaltyCountCommand);
+                                }
                             }
-                        }
-                        if(deadlineStatus == MEET_RECENT_DEADLINE){
-                            String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE userid = %d AND taskid = %d", userid, taskId);
-                            st.executeUpdate(clearProgressCommand);
-                        }
-                        else{
-                            String setTaskInvalid = String.format("UPDATE grouptask SET valid = false WHERE taskid = %d", taskId);
-                            st.executeUpdate(setTaskInvalid);
-                            String removeFromTask = String.format("UPDATE users SET mytask = array_remove(mytask, '%d') WHERE userid = %d",taskId, userid);
-                            st.executeUpdate(removeFromTask);
-                            String addToCompleteTask = String.format("UPDATE users SET completetask = array_append(completetask, '%d') WHERE userid = %d",taskId, userid);
-                            st.executeUpdate(addToCompleteTask);
-                        }
+                            if (deadlineStatus == MEET_RECENT_DEADLINE) {
+                                String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE userid = %d AND taskid = %d", userid, taskId);
+                                st.executeUpdate(clearProgressCommand);
+                            } else {
+                                String setTaskInvalid = String.format("UPDATE grouptask SET valid = false WHERE taskid = %d", taskId);
+                                st.executeUpdate(setTaskInvalid);
+                                String removeFromTask = String.format("UPDATE users SET mytask = array_remove(mytask, '%d') WHERE userid = %d", taskId, userid);
+                                st.executeUpdate(removeFromTask);
+                                String addToCompleteTask = String.format("UPDATE users SET completetask = array_append(completetask, '%d') WHERE userid = %d", taskId, userid);
+                                st.executeUpdate(addToCompleteTask);
+                            }
 
+                        }
                     }
                 }
             }
@@ -870,15 +870,15 @@ public class ToDatabase {
             return MEET_FINAL_DEADLINE;
         }
         switch (repetition){
-            case "Daily":
+            case "{Daily}":
                 if(today.isEqual(startdate.plusDays(1))){
                     return MEET_RECENT_DEADLINE;
                 }
-            case "Weekly":
+            case "{Weekly}":
                 if(today.isEqual(startdate.plusDays(7))){
                     return MEET_RECENT_DEADLINE;
                 }
-            case "Monthly":
+            case "{Monthly}":
                 if(today.isEqual(startdate.plusMonths(1))){
                     return MEET_RECENT_DEADLINE;
                 }
