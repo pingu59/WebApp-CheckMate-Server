@@ -839,7 +839,7 @@ public class ToDatabase {
                                 }
                             }
                             if (deadlineStatus == MEET_RECENT_DEADLINE) {
-                                String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE userid = %d AND taskid = %d", userid, taskId);
+                                String clearProgressCommand = String.format("UPDATE progresstrack SET progress = 0 WHERE memberid = %d AND taskid = %d", userid, taskId);
                                 st.executeUpdate(clearProgressCommand);
                             } else {
                                 String setTaskInvalid = String.format("UPDATE grouptask SET valid = false WHERE taskid = %d", taskId);
