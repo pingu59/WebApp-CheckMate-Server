@@ -857,7 +857,7 @@ public class ToDatabase {
             st.close();
             return SUCCESS;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return SERVER_FAILURE;
         }
     }
 

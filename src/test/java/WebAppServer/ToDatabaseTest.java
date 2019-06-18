@@ -16,4 +16,9 @@ public class ToDatabaseTest {
   @Test
   public void getUser() {
   }
+
+  @Test
+  public void t(){
+    System.out.println(ToDatabase.getAllMyTask(33));
+  }
 }
