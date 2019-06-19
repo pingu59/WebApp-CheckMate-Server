@@ -457,12 +457,12 @@ public class ToDatabase {
                 ResultSet inviteTaskInfoResult = st.executeQuery(getInviteTaskInfo);
 
                 String[] jasonIds =
-                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member", "taskicon"};
                 String[] columnName =
-                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member"};
+                        {"taskid", "creatorid", "taskname", "repetition","frequency",  "deadline", "member", "taskicon"};
                 while(inviteTaskInfoResult.next()) {
                     JSONObject jObj = new JSONObject();
-                    for(int c = 0; c < 7; c++) {
+                    for(int c = 0; c < 8; c++) {
                         jObj.put(jasonIds[c], inviteTaskInfoResult.getObject(columnName[c]));
                     }
                     jsonArray.put(jObj);
